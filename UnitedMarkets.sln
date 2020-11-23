@@ -1,0 +1,71 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitedMarkets.Core", "UnitedMarkets.Core\UnitedMarkets.Core.csproj", "{D633E70E-8CB0-46A0-A1D2-AA0443A642CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitedMarkets.Core.Entities", "UnitedMarkets.Core.Entities\UnitedMarkets.Core.Entities.csproj", "{3B69CB59-82AF-45ED-94DD-CC504948316A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitedMarkets.Infrastructure.Data", "UnitedMarkets.Infrastructure.Data\UnitedMarkets.Infrastructure.Data.csproj", "{1437C4C3-C189-4440-A21C-804BADDDCF27}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{9385B219-F1E0-4F08-8855-EE940FE684BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3FCAD90E-7900-44F4-B125-6CC2E451AD84}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{870A8BB7-91E1-4516-A972-628691FB49E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitedMarkets.UI.RestApi", "UnitedMarkets.UI.RestApi\UnitedMarkets.UI.RestApi.csproj", "{F67A4C9E-1A3F-4551-A7A6-5D7803D2A9DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitedMarkets.Core.Filtering", "UnitedMarkets.Core.Filtering\UnitedMarkets.Core.Filtering.csproj", "{C25A26EF-3D9E-41F9-B29A-5CC1B2566C23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CoreTests", "CoreTests", "{04A840A8-2E18-49C2-9EA4-3FA9A2DC86D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitedMarkets.Core.Tests", "UnitedMarkets.Core.Tests\UnitedMarkets.Core.Tests.csproj", "{EA7FB448-A772-468A-AD9D-F0C3695B736E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D633E70E-8CB0-46A0-A1D2-AA0443A642CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D633E70E-8CB0-46A0-A1D2-AA0443A642CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D633E70E-8CB0-46A0-A1D2-AA0443A642CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D633E70E-8CB0-46A0-A1D2-AA0443A642CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B69CB59-82AF-45ED-94DD-CC504948316A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B69CB59-82AF-45ED-94DD-CC504948316A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B69CB59-82AF-45ED-94DD-CC504948316A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B69CB59-82AF-45ED-94DD-CC504948316A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1437C4C3-C189-4440-A21C-804BADDDCF27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1437C4C3-C189-4440-A21C-804BADDDCF27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1437C4C3-C189-4440-A21C-804BADDDCF27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1437C4C3-C189-4440-A21C-804BADDDCF27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F67A4C9E-1A3F-4551-A7A6-5D7803D2A9DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F67A4C9E-1A3F-4551-A7A6-5D7803D2A9DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F67A4C9E-1A3F-4551-A7A6-5D7803D2A9DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F67A4C9E-1A3F-4551-A7A6-5D7803D2A9DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C25A26EF-3D9E-41F9-B29A-5CC1B2566C23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25A26EF-3D9E-41F9-B29A-5CC1B2566C23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25A26EF-3D9E-41F9-B29A-5CC1B2566C23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25A26EF-3D9E-41F9-B29A-5CC1B2566C23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA7FB448-A772-468A-AD9D-F0C3695B736E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA7FB448-A772-468A-AD9D-F0C3695B736E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA7FB448-A772-468A-AD9D-F0C3695B736E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA7FB448-A772-468A-AD9D-F0C3695B736E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D633E70E-8CB0-46A0-A1D2-AA0443A642CD} = {3FCAD90E-7900-44F4-B125-6CC2E451AD84}
+		{3B69CB59-82AF-45ED-94DD-CC504948316A} = {3FCAD90E-7900-44F4-B125-6CC2E451AD84}
+		{1437C4C3-C189-4440-A21C-804BADDDCF27} = {870A8BB7-91E1-4516-A972-628691FB49E6}
+		{F67A4C9E-1A3F-4551-A7A6-5D7803D2A9DB} = {9385B219-F1E0-4F08-8855-EE940FE684BB}
+		{C25A26EF-3D9E-41F9-B29A-5CC1B2566C23} = {3FCAD90E-7900-44F4-B125-6CC2E451AD84}
+		{EA7FB448-A772-468A-AD9D-F0C3695B736E} = {04A840A8-2E18-49C2-9EA4-3FA9A2DC86D4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD991BA5-3FAD-43D4-991B-A9E12193FDC1}
+	EndGlobalSection
+EndGlobal
