@@ -6,16 +6,20 @@ using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Infrastructure.Data
 {
-    public class UnitedMarketsDBContext : DbContext
+    public class UnitedMarketsDbContext : DbContext
     {
-        public UnitedMarketsDBContext(DbContextOptions<UnitedMarketsDBContext> opt) : base(opt)
+        public UnitedMarketsDbContext(DbContextOptions<UnitedMarketsDbContext> opt) : base(opt)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
-                .HasOne(p => p.Origin)
+                .HasOne(p => p.AmountUnit)
+                .WithMany(unit => unit.Products);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.OriginCountry)
                 .WithMany(m => m.Products);
 
             modelBuilder.Entity<Product>()
@@ -43,11 +47,11 @@ namespace UnitedMarkets.Infrastructure.Data
 
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<AmountUnit> AmountUnits { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> Orderlines { get; set; }
         public DbSet<Market> Markets { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Origin> Origins { get; set; }
-        
+        public DbSet<OriginCountry> OriginCountries { get; set; }
     }
 }

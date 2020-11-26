@@ -8,11 +8,11 @@ using UnitedMarkets.Core.Filtering;
 
 namespace UnitedMarkets.Infrastructure.Data.Repositories
 {
-    public class ProductSQLiteRepository : IProductRepository
+    public class ProductSqLiteRepository : IProductRepository
     {
-        private UnitedMarketsDBContext _ctx;
+        private UnitedMarketsDbContext _ctx;
 
-        public ProductSQLiteRepository(UnitedMarketsDBContext context)
+        public ProductSqLiteRepository(UnitedMarketsDbContext context)
         {
             _ctx = context;
         }
@@ -23,7 +23,9 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
 
 
             filteredList.List = _ctx.Products
-                .Include(p => p.Origin)
+                .Where(p => p.MarketId == filter.MarketId)
+                .Include(p => p.OriginCountry)
+                .Include(p => p.Market)
                 .ToList();
             filteredList.TotalCount = _ctx.Products.Count();
 
