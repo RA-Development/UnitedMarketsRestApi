@@ -10,6 +10,6 @@ namespace UnitedMarkets.Core.Filtering
         public int ItemsPrPage { get; set; }
         public string SearchField { get; set; }
         public string SearchValue { get; set; }
-
+        public int MarketId { get; set; }
     }
 }
