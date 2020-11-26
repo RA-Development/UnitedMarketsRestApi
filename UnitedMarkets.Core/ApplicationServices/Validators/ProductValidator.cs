@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace UnitedMarkets.Core.ApplicationServices.Implementations
+﻿namespace UnitedMarkets.Core.ApplicationServices.Validators
 {
     public class ProductValidator : IProductValidator
     {

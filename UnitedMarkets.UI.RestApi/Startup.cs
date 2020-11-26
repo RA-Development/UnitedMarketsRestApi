@@ -13,8 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using UnitedMarkets.Core.ApplicationServices;
-using UnitedMarkets.Core.ApplicationServices.Implementations;
 using UnitedMarkets.Core.ApplicationServices.Services;
+using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Infrastructure.Data;
 using UnitedMarkets.Infrastructure.Data.Repositories;
@@ -59,6 +59,7 @@ namespace UnitedMarkets.UI.RestApi
             );
 
             services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<IFilterValidator, FilterValidator>();
             services.AddScoped<IProductValidator, ProductValidator>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductRepository, ProductSqLiteRepository>();

@@ -7,17 +7,23 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
 {
     public class ProductService : IProductService
     {
-        private IProductRepository productRepo;
+        private IProductRepository _productRepo;
+        private IFilterValidator _filterValidator;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(
+            IProductRepository productRepository,
+            IFilterValidator filterValidator)
         {
-            productRepo = productRepository ??
-                          throw new NullReferenceException("Product Repository Cannot be Null.");
+            _productRepo = productRepository ??
+                           throw new NullReferenceException("Product Repository Cannot be Null.");
+            _filterValidator = filterValidator ??
+                               throw new NullReferenceException("Filter Validator Cannot be Null.");
         }
 
         public FilteredList<Product> GetAllProducts(Filter filter)
         {
-            return productRepo.GetAllProducts(filter);
+            _filterValidator.DefaultValidation(filter);
+            return _productRepo.GetAllProducts(filter);
         }
     }
 }
