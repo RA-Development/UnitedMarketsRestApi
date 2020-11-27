@@ -60,9 +60,40 @@ namespace UnitedMarkets.Infrastructure.Data
 
             var product3 = new Product()
             {
-                Name = "Banana",
+                Name = "Grape",
                 CategoryId = 1,
                 MarketId = 2,
+                OriginCountryId = 1,
+                Price = 6.00,
+                Amount = 3,
+                AmountUnitId = 1
+            };
+
+            var product4 = new Product()
+            {
+                Name = "Banana",
+                CategoryId = 1,
+                MarketId = 1,
+                OriginCountryId = 1,
+                Price = 6.00,
+                Amount = 3,
+                AmountUnitId = 1
+            };
+            var product5 = new Product()
+            {
+                Name = "Kiwi",
+                CategoryId = 1,
+                MarketId = 1,
+                OriginCountryId = 1,
+                Price = 6.00,
+                Amount = 3,
+                AmountUnitId = 1
+            };
+            var product6 = new Product()
+            {
+                Name = "Coconut",
+                CategoryId = 1,
+                MarketId = 1,
                 OriginCountryId = 1,
                 Price = 6.00,
                 Amount = 3,
@@ -72,6 +103,9 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Products.Add(product1);
             _ctx.Products.Add(product2);
             _ctx.Products.Add(product3);
+            _ctx.Products.Add(product4);
+            _ctx.Products.Add(product5);
+            _ctx.Products.Add(product6);
 
 
             _ctx.SaveChanges();

@@ -10,23 +10,13 @@ namespace UnitedMarkets.Core.Entities
         public string Name { get; set; }
         public double Price { get; set; }
         public int Amount { get; set; }
-
-
         public List<OrderLine> Orders { get; set; }
-
-
         public int MarketId { get; set; }
         public Market Market { get; set; }
-
-
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-
-
         public int OriginCountryId { get; set; }
         public OriginCountry OriginCountry { get; set; }
-
-
         public int AmountUnitId { get; set; }
         public AmountUnit AmountUnit { get; set; }
     }

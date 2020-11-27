@@ -26,6 +26,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
                 .Where(p => p.MarketId == filter.MarketId)
                 .Include(p => p.OriginCountry)
                 .Include(p => p.Market)
+                .Include(p => p.AmountUnit)
                 .ToList();
             filteredList.TotalCount = _ctx.Products.Count();
 

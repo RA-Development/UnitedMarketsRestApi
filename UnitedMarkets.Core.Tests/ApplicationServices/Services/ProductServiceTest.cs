@@ -7,6 +7,7 @@ using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Services;
 using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
+using UnitedMarkets.Core.Entities;
 using UnitedMarkets.Core.Filtering;
 using Xunit;
 
