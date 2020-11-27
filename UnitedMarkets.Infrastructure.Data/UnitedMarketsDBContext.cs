@@ -36,8 +36,7 @@ namespace UnitedMarkets.Infrastructure.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderLine> Orderlines { get; set; }
-
-
+        public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Market> Markets { get; set; }
     }
 }
