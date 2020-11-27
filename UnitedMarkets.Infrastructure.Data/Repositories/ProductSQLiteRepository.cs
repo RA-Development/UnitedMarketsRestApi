@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnitedMarkets.Core.DomainServices;
+﻿using UnitedMarkets.Core.DomainServices;
 
-namespace UnitedMarkets.Infrastructure.Data
+namespace UnitedMarkets.Infrastructure.Data.Repositories
 {
-    public class ProductSQLiteRepository : IProductRepository
+    public class ProductSqLiteRepository : IProductRepository
     {
 
 

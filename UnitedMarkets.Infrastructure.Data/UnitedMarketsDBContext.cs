@@ -6,9 +6,9 @@ using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Infrastructure.Data
 {
-    public class UnitedMarketsDBContext : DbContext
+    public class UnitedMarketsDbContext : DbContext
     {
-        public UnitedMarketsDBContext(DbContextOptions<UnitedMarketsDBContext> opt) : base(opt)
+        public UnitedMarketsDbContext(DbContextOptions<UnitedMarketsDbContext> opt) : base(opt)
         { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

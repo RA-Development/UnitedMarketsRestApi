@@ -5,7 +5,7 @@ using UnitedMarkets.Core.DomainServices;
 
 namespace UnitedMarkets.Infrastructure.Data
 {
-    public class DBInitializer : IDBInitializer
+    public class DbInitializer : IDbInitializer
     {
         public void InitData()
         {

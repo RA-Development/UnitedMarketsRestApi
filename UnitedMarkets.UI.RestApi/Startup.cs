@@ -15,6 +15,7 @@ using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Implementations;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Infrastructure.Data;
+using UnitedMarkets.Infrastructure.Data.Repositories;
 
 namespace UnitedMarkets.UI.RestApi
 {
@@ -39,11 +40,11 @@ namespace UnitedMarkets.UI.RestApi
 
             if (_env.IsDevelopment())
             {
-                services.AddDbContext<UnitedMarketsDBContext>(opt =>
+                services.AddDbContext<UnitedMarketsDbContext>(opt =>
                 {
                     opt
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .UseSqlite("Data Source=UnitedMarketsSQLite.db")
+                    .UseSqlite("Data Source=UnitedMarketsSqLite.db")
                     .EnableSensitiveDataLogging();  // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
             }
@@ -62,10 +63,10 @@ namespace UnitedMarkets.UI.RestApi
                     })
             );
 
-            services.AddScoped<IDBInitializer, DBInitializer>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IProductValidator, ProductValidator>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IProductRepository, ProductSQLiteRepository>();
+            services.AddScoped<IProductRepository, ProductSqLiteRepository>();
 
             services.AddControllers();
         }
@@ -77,8 +78,8 @@ namespace UnitedMarkets.UI.RestApi
             {
                 app.UseDeveloperExceptionPage();
                 using var scope = app.ApplicationServices.CreateScope();
-                var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDBContext>();
-                var dataInitializer = scope.ServiceProvider.GetRequiredService<IDBInitializer>();
+                var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
+                var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
 
                 ctx.Database.EnsureDeleted();
                 ctx.Database.EnsureCreated();

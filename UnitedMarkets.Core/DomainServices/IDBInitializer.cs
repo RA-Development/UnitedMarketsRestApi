@@ -4,7 +4,7 @@ using System.Text;
 
 namespace UnitedMarkets.Core.DomainServices
 {
-    public interface IDBInitializer
+    public interface IDbInitializer
     {
 
         void InitData();
