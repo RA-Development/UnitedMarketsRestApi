@@ -16,6 +16,7 @@ using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Services;
 using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
+using UnitedMarkets.Core.PriceCalculator;
 using UnitedMarkets.Infrastructure.Data;
 using UnitedMarkets.Infrastructure.Data.Repositories;
 
@@ -43,8 +44,8 @@ namespace UnitedMarkets.UI.RestApi
                 {
                     opt
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                        .UseSqlite("Data Source=UnitedMarketsSqLite.db")
-                        .EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
+                        .UseSqlite("Data Source=UnitedMarketsSqLite.db");
+                    //.EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
             }
 
@@ -61,7 +62,11 @@ namespace UnitedMarkets.UI.RestApi
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IFilterValidator, FilterValidator>();
             services.AddScoped<IProductValidator, ProductValidator>();
+
+            services.AddScoped<IPriceCalculator, PriceCalculator>();
+
             services.AddScoped<IProductService, ProductService>();
+
             services.AddScoped<IProductRepository, ProductSqLiteRepository>();
 
             services.AddControllers().AddNewtonsoftJson(option =>
@@ -94,7 +99,7 @@ namespace UnitedMarkets.UI.RestApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseCors();
 
             app.UseAuthorization();

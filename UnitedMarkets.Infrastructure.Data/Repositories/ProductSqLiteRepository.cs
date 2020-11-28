@@ -24,11 +24,11 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
 
             filteredList.List = _ctx.Products
                 .Where(p => p.MarketId == filter.MarketId)
-                .Include(p => p.OriginCountry)
+                .Include(p => p.Origin)
                 .Include(p => p.Market)
                 .Include(p => p.AmountUnit)
                 .ToList();
-            filteredList.TotalCount = _ctx.Products.Count();
+            filteredList.TotalCount = filteredList.List.Count();
 
             return filteredList;
         }

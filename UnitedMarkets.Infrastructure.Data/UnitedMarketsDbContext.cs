@@ -19,7 +19,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 .WithMany(unit => unit.Products);
 
             modelBuilder.Entity<Product>()
-                .HasOne(p => p.OriginCountry)
+                .HasOne(p => p.Origin)
                 .WithMany(m => m.Products);
 
             modelBuilder.Entity<Product>()
@@ -52,6 +52,6 @@ namespace UnitedMarkets.Infrastructure.Data
         public DbSet<OrderLine> Orderlines { get; set; }
         public DbSet<Market> Markets { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<OriginCountry> OriginCountries { get; set; }
+        public DbSet<Origin> OriginCountries { get; set; }
     }
 }

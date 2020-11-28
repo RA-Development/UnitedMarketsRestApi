@@ -18,18 +18,20 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         [Fact]
         public void ProductService_IsOfTypeIProductService()
         {
+            var calc = new PriceCalculator.PriceCalculator();
             var productRepositoryMock = new Mock<IProductRepository>();
             var filterValidator = new FilterValidator();
-            new ProductService(productRepositoryMock.Object, filterValidator)
+            new ProductService(productRepositoryMock.Object, filterValidator, calc)
                 .Should().BeAssignableTo<IProductService>();
         }
 
         [Fact]
         public void NewProductService_WithNullRepository_ShouldThrowException()
         {
+            var calc = new PriceCalculator.PriceCalculator();
             var productRepositoryMock = new Mock<IProductRepository>();
             var filterValidator = new FilterValidator();
-            Action action = () => new ProductService(null as IProductRepository, filterValidator);
+            Action action = () => new ProductService(null as IProductRepository, filterValidator, calc);
             action.Should().Throw<NullReferenceException>()
                 .WithMessage(("Product Repository Cannot be Null."));
         }
@@ -37,19 +39,24 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         [Fact]
         public void NewProductService_WithNullFilterValidator_ShouldThrowException()
         {
+            var calc = new PriceCalculator.PriceCalculator();
             var productRepositoryMock = new Mock<IProductRepository>();
-            Action action = () => new ProductService(productRepositoryMock.Object, null as IFilterValidator);
+            Action action = () => new ProductService(productRepositoryMock.Object, null as IFilterValidator, calc);
             action.Should().Throw<NullReferenceException>()
                 .WithMessage(("Filter Validator Cannot be Null."));
         }
 
+
         [Fact]
         public void GetAllProducts__ShouldCallRepoWithFilterInParams_Once()
         {
+            var calc = new PriceCalculator.PriceCalculator();
             var productRepositoryMock = new Mock<IProductRepository>();
             var filterValidator = new FilterValidator();
-            IProductService productService = new ProductService(productRepositoryMock.Object, filterValidator);
-            var filter = new Filter() {MarketId = 7};
+            IProductService productService = new ProductService(productRepositoryMock.Object, filterValidator, calc);
+            var filter = new Filter() {MarketId = 1};
+            productRepositoryMock.Setup(m
+                => m.GetAllProducts(filter)).Returns(() => new FilteredList<Product>() {List = new List<Product>()});
             productService.GetAllProducts(filter);
             productRepositoryMock.Verify(repo => repo.GetAllProducts(filter), Times.Once);
         }

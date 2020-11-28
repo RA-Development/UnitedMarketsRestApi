@@ -28,8 +28,8 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Markets.Add(new Market() {Name = "føtex"});
             _ctx.SaveChanges();
             //    init origins
-            _ctx.OriginCountries.Add(new OriginCountry() {Name = "Spain"});
-            _ctx.OriginCountries.Add(new OriginCountry() {Name = "Italy"});
+            _ctx.OriginCountries.Add(new Origin() {Name = "Spain"});
+            _ctx.OriginCountries.Add(new Origin() {Name = "Italy"});
             _ctx.SaveChanges();
             //    init categories
             _ctx.Categories.Add(new Category() {Name = "Fruit & Vegetable"});
@@ -41,8 +41,8 @@ namespace UnitedMarkets.Infrastructure.Data
                 Name = "Apples 6 pack",
                 CategoryId = 1,
                 MarketId = 1,
-                OriginCountryId = 1,
-                Price = 4.95,
+                OriginId = 1,
+                PricePerUnit = 4.95,
                 Amount = 3,
                 AmountUnitId = 1
             };
@@ -52,8 +52,8 @@ namespace UnitedMarkets.Infrastructure.Data
                 Name = "Sugar",
                 CategoryId = 1,
                 MarketId = 1,
-                OriginCountryId = 2,
-                Price = 3.00,
+                OriginId = 2,
+                PricePerUnit = 3.00,
                 Amount = 2,
                 AmountUnitId = 2
             };
@@ -63,8 +63,8 @@ namespace UnitedMarkets.Infrastructure.Data
                 Name = "Grape",
                 CategoryId = 1,
                 MarketId = 2,
-                OriginCountryId = 1,
-                Price = 6.00,
+                OriginId = 1,
+                PricePerUnit = 6.00,
                 Amount = 3,
                 AmountUnitId = 1
             };
@@ -74,8 +74,8 @@ namespace UnitedMarkets.Infrastructure.Data
                 Name = "Banana",
                 CategoryId = 1,
                 MarketId = 1,
-                OriginCountryId = 1,
-                Price = 6.00,
+                OriginId = 1,
+                PricePerUnit = 6.00,
                 Amount = 3,
                 AmountUnitId = 1
             };
@@ -84,8 +84,8 @@ namespace UnitedMarkets.Infrastructure.Data
                 Name = "Kiwi",
                 CategoryId = 1,
                 MarketId = 1,
-                OriginCountryId = 1,
-                Price = 6.00,
+                OriginId = 1,
+                PricePerUnit = 6.00,
                 Amount = 3,
                 AmountUnitId = 1
             };
@@ -94,8 +94,8 @@ namespace UnitedMarkets.Infrastructure.Data
                 Name = "Coconut",
                 CategoryId = 1,
                 MarketId = 1,
-                OriginCountryId = 1,
-                Price = 6.00,
+                OriginId = 1,
+                PricePerUnit = 6.00,
                 Amount = 3,
                 AmountUnitId = 1
             };
