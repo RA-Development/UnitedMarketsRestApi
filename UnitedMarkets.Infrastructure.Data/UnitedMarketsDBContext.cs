@@ -6,9 +6,9 @@ using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Infrastructure.Data
 {
-    public class UnitedMarketsDBContext : DbContext
+    public class UnitedMarketsDbContext : DbContext
     {
-        public UnitedMarketsDBContext(DbContextOptions<UnitedMarketsDBContext> opt) : base(opt)
+        public UnitedMarketsDbContext(DbContextOptions<UnitedMarketsDbContext> opt) : base(opt)
         { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,8 +36,7 @@ namespace UnitedMarkets.Infrastructure.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderLine> Orderlines { get; set; }
-
-
+        public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Market> Markets { get; set; }
     }
 }
