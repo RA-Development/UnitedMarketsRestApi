@@ -18,7 +18,7 @@ namespace UnitedMarkets.Infrastructure.Data
         public void InitData()
         {
             //    init amountUnits
-            _ctx.AmountUnits.Add(new AmountUnit() {Name = "count"});
+            _ctx.AmountUnits.Add(new AmountUnit() {Name = "piece"});
             _ctx.AmountUnits.Add(new AmountUnit() {Name = "kg"});
             _ctx.SaveChanges();
 
