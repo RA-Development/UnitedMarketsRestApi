@@ -2,10 +2,12 @@
 
 namespace UnitedMarkets.Core.Entities
 {
-    public class Market
+    public class AmountUnit
     {
         public int Id { get; set; }
+
         public string Name { get; set; }
+
         public List<Product> Products { get; set; }
     }
 }

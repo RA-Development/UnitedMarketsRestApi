@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UnitedMarkets.Core.Entities\UnitedMarkets.Core.Entities.csproj" />
+    <ProjectReference Include="..\UnitedMarkets.Core.Filtering\UnitedMarkets.Core.Filtering.csproj" />
+    <ProjectReference Include="..\UnitedMarkets.Core.PriceCalculator\UnitedMarkets.Core.PriceCalculator.csproj" />
   </ItemGroup>
 
 </Project>

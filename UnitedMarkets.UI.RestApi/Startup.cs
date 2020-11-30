@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using UnitedMarkets.Core.ApplicationServices;
-using UnitedMarkets.Core.ApplicationServices.Implementations;
 using UnitedMarkets.Core.ApplicationServices.Services;
+using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
+using UnitedMarkets.Core.PriceCalculator;
 using UnitedMarkets.Infrastructure.Data;
 using UnitedMarkets.Infrastructure.Data.Repositories;
 
@@ -15,7 +18,6 @@ namespace UnitedMarkets.UI.RestApi
 {
     public class Startup
     {
-
         public IConfiguration _conf { get; }
         private IWebHostEnvironment _env { get; }
 
@@ -30,41 +32,43 @@ namespace UnitedMarkets.UI.RestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             if (_env.IsDevelopment())
             {
                 services.AddDbContext<UnitedMarketsDbContext>(opt =>
                 {
                     opt
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .UseSqlite("Data Source=UnitedMarketsSqLite.db")
-                    .EnableSensitiveDataLogging();  // BE AWARE ...   only in dev mode
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                        .UseSqlite("Data Source=UnitedMarketsSqLite.db");
+                    //.EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
             }
 
             if (_env.IsProduction())
             {
-
             }
 
             // Configure the default CORS policy.
             services.AddCors(options =>
                 options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyOrigin();
-                    })
+                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyOrigin(); })
             );
 
             services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<IFilterValidator, FilterValidator>();
             services.AddScoped<IProductValidator, ProductValidator>();
+
+            services.AddScoped<IPriceCalculator, PriceCalculator>();
+
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IProductRepository, ProductSqLiteRepository>();
             services.AddScoped<IMarketService, MarketService>();
             services.AddScoped<IMarketRepository, MarketSqLiteRepository>();
 
-            services.AddControllers();
+            services.AddScoped<IProductRepository, ProductSqLiteRepository>();
+
+            services.AddControllers().AddNewtonsoftJson(option =>
+            {
+                option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,14 +85,11 @@ namespace UnitedMarkets.UI.RestApi
                 ctx.Database.EnsureCreated();
 
                 dataInitializer.InitData();
-
-
             }
 
 
             if (_env.IsProduction())
             {
-
             }
 
             app.UseHttpsRedirection();
@@ -97,12 +98,11 @@ namespace UnitedMarkets.UI.RestApi
             
             app.UseCors();
 
+            app.UseCors();
+
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
