@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Core.PriceCalculator
@@ -10,8 +11,7 @@ namespace UnitedMarkets.Core.PriceCalculator
         {
             var p = product;
             var price = p.Amount * p.PricePerUnit;
-            var formatted = Math.Truncate(price * 100) / 100;
-            p.Price = formatted;
+            p.Price = Math.Round(price, 2);
             return p;
         }
     }

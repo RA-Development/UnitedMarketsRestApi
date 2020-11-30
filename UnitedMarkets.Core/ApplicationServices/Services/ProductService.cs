@@ -11,11 +11,13 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
         private IProductRepository _productRepo;
         private IFilterValidator _filterValidator;
         private IPriceCalculator _priceCalc;
+        private IProductValidator _productValidator;
 
         public ProductService(
             IProductRepository productRepository,
             IFilterValidator filterValidator,
-            IPriceCalculator priceCalculator)
+            IPriceCalculator priceCalculator,
+            IProductValidator productValidator)
         {
             _productRepo = productRepository ??
                            throw new NullReferenceException("Product Repository Cannot be Null.");
@@ -23,6 +25,8 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
                                throw new NullReferenceException("Filter Validator Cannot be Null.");
             _priceCalc = priceCalculator ??
                          throw new NullReferenceException("Price Calculator Cannot be Null.");
+            _productValidator = productValidator ??
+                                throw new NullReferenceException("Product Validator Cannot be Null.");
         }
 
         public FilteredList<Product> GetAllProducts(Filter filter)
@@ -31,6 +35,7 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
             var filteredList = _productRepo.GetAllProducts(filter);
             foreach (var product in filteredList.List)
             {
+                _productValidator.DefaultValidation(product);
                 _priceCalc.CalculatePrice(product);
             }
 

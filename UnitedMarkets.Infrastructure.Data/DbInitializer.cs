@@ -38,12 +38,12 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.SaveChanges();
             var product1 = new Product()
             {
-                Name = "Apples 6 pack",
+                Name = "Apples",
                 CategoryId = 1,
                 MarketId = 1,
                 OriginId = 1,
                 PricePerUnit = 4.95,
-                Amount = 3,
+                Amount = 6,
                 AmountUnitId = 1
             };
 
@@ -53,7 +53,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 CategoryId = 1,
                 MarketId = 1,
                 OriginId = 2,
-                PricePerUnit = 3.00,
+                PricePerUnit = 3.10,
                 Amount = 2,
                 AmountUnitId = 2
             };
@@ -75,8 +75,8 @@ namespace UnitedMarkets.Infrastructure.Data
                 CategoryId = 1,
                 MarketId = 1,
                 OriginId = 1,
-                PricePerUnit = 6.00,
-                Amount = 3,
+                PricePerUnit = 9.50,
+                Amount = 4,
                 AmountUnitId = 1
             };
             var product5 = new Product()
@@ -86,7 +86,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 MarketId = 1,
                 OriginId = 1,
                 PricePerUnit = 6.00,
-                Amount = 3,
+                Amount = 1,
                 AmountUnitId = 1
             };
             var product6 = new Product()
@@ -96,7 +96,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 MarketId = 1,
                 OriginId = 1,
                 PricePerUnit = 6.00,
-                Amount = 3,
+                Amount = 1,
                 AmountUnitId = 1
             };
 
