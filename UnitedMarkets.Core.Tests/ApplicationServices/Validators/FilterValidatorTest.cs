@@ -10,16 +10,16 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
     public class FilterValidatorTest
     {
         [Fact]
-        public void FilterValidator_ShouldBeOfTypeIFilterValidator()
+        public void FilterValidator_ShouldBeOfTypeIValidatorFilter()
         {
-            new FilterValidator().Should().BeAssignableTo<IFilterValidator>();
+            new FilterValidator().Should().BeAssignableTo<IValidator<Filter>>();
         }
 
 
         [Fact]
         public void DefaultValidation_FilterWithNegativeId_ShouldThrowException()
         {
-            IFilterValidator validator = new FilterValidator();
+            IValidator<Filter> validator = new FilterValidator();
             var filter = new Filter() {MarketId = -4};
             Action action = () => validator.DefaultValidation(filter);
             action.Should().Throw<ArgumentException>()
@@ -29,7 +29,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         [Fact]
         public void DefaultValidation_FilterWithIdZero_ShouldThrowException()
         {
-            IFilterValidator validator = new FilterValidator();
+            IValidator<Filter> validator = new FilterValidator();
             var filter = new Filter() {MarketId = 0};
             Action action = () => validator.DefaultValidation(filter);
             action.Should().Throw<ArgumentException>()

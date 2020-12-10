@@ -16,9 +16,9 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
 {
     public class ProductServiceTest
     {
-        private IProductValidator _productValidator;
+        private IValidator<Product> _productValidator;
         private IPriceCalculator _priceCalculator;
-        private IFilterValidator _filterValidator;
+        private IValidator<Filter> _filterValidator;
         private Mock<IProductRepository> _repoMock;
 
         
@@ -50,7 +50,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         public void NewProductService_WithNullFilterValidator_ShouldThrowException()
         {
             Action action = () =>
-                new ProductService(_repoMock.Object, null as IFilterValidator, _priceCalculator, _productValidator);
+                new ProductService(_repoMock.Object, null as IValidator<Filter>, _priceCalculator, _productValidator);
             action.Should().Throw<NullReferenceException>()
                 .WithMessage(("Filter Validator Cannot be Null."));
         }

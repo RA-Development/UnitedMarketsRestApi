@@ -9,15 +9,15 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
     public class ProductService : IProductService
     {
         private IProductRepository _productRepo;
-        private IFilterValidator _filterValidator;
+        private IValidator<Filter> _filterValidator;
         private IPriceCalculator _priceCalc;
-        private IProductValidator _productValidator;
+        private IValidator<Product> _productValidator;
 
         public ProductService(
             IProductRepository productRepository,
-            IFilterValidator filterValidator,
+            IValidator<Filter> filterValidator,
             IPriceCalculator priceCalculator,
-            IProductValidator productValidator)
+            IValidator<Product> productValidator)
         {
             _productRepo = productRepository ??
                            throw new NullReferenceException("Product Repository Cannot be Null.");

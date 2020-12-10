@@ -12,11 +12,56 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
 {
     public class UserServiceTest
     {
+        private IAuthenticationHelper _authenticationHelper;
+        private Mock<IRepository<User>> _repositoryMock;
+        private User _user;
+        private IUserService _userService;
+        private Mock<IValidator<LoginInputModel>> _validatorMock;
+
+        public UserServiceTest()
+        {
+            ArrangeAuthenticateUserTests();
+        }
+
+        private void ArrangeAuthenticateUserTests()
+        {
+            _repositoryMock = new Mock<IRepository<User>>();
+            _validatorMock = new Mock<IValidator<LoginInputModel>>();
+
+            var secretBytes = new byte[40];
+            var rand = new Random();
+            rand.NextBytes(secretBytes);
+            _authenticationHelper = new AuthenticationHelper(secretBytes);
+
+            _authenticationHelper.CreatePasswordHash("Passw0rd", out var passwordHash, out var passwordSalt);
+
+            _user = new User
+            {
+                Username = "Aluong",
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                IsAdmin = true
+            };
+
+            _repositoryMock.Setup(repo => repo.GetByName(_user.Username)).Returns(_user);
+
+            _userService = new UserService(_repositoryMock.Object, _authenticationHelper,
+                _validatorMock.Object);
+        }
+
+        [Fact]
+        public void UserService_ShouldBeOfTypeIUserService()
+        {
+            new UserService(_repositoryMock.Object, _authenticationHelper, _validatorMock.Object)
+                .Should()
+                .BeAssignableTo<IUserService>();
+        }
+
         [Fact]
         public void NewUserService_WithNullRepository_ShouldThrowException()
         {
-            var authenticationHelperMock = new Mock<IAuthenticationHelper>();
-            Action action = () => new UserService(null, authenticationHelperMock.Object);
+            Action action = () =>
+                new UserService(null, _authenticationHelper, _validatorMock.Object);
             action.Should().Throw<ArgumentNullException>()
                 .WithMessage("Repository cannot be null. (Parameter 'userRepository')");
         }
@@ -24,84 +69,50 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         [Fact]
         public void NewUserService_WithNullAuthenticationHelper_ShouldThrowException()
         {
-            var repositoryMock = new Mock<IRepository<User>>();
-            Action action = () => new UserService(repositoryMock.Object, null);
+            Action action = () => new UserService(_repositoryMock.Object, null, _validatorMock.Object);
             action.Should().Throw<ArgumentNullException>()
                 .WithMessage("AuthenticationHelper cannot be null. (Parameter 'authenticationHelper')");
         }
 
         [Fact]
-        public void UserService_ShouldBeOfTypeIUserService()
+        public void NewUserService_WithNullValidator_ShouldThrowException()
         {
-            var repositoryMock = new Mock<IRepository<User>>();
-            var authenticationHelperMock = new Mock<IAuthenticationHelper>();
-            new UserService(repositoryMock.Object, authenticationHelperMock.Object).Should()
-                .BeAssignableTo<IUserService>();
+            Action action = () => new UserService(_repositoryMock.Object, _authenticationHelper, null);
+            action.Should().Throw<ArgumentNullException>()
+                .WithMessage("LoginInputModelValidator cannot be null. (Parameter 'loginInputModelValidator')");
         }
 
         [Fact]
-        public void ValidateUser_ShouldCallUserRepositoryGetByNameWithTheLoginInputModelAsParam_Once()
+        public void AuthenticateUser_ShouldCallLoginInputModelValidatorDefaultValidationWithLoginInputModelParam_Once()
         {
-            //Arrange
-            var repositoryMock = new Mock<IRepository<User>>();
-
-            var secretBytes = new byte[40];
-            var rand = new Random();
-            rand.NextBytes(secretBytes);
-            IAuthenticationHelper authenticationHelper = new AuthenticationHelper(secretBytes);
-
-            authenticationHelper.CreatePasswordHash("Passw0rd", out var passwordHash, out var passwordSalt);
-
-            var user = new User
-            {
-                Username = "Aluong",
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                IsAdmin = true
-            };
-
-            repositoryMock.Setup(repo => repo.GetByName(user.Username)).Returns(user);
-
-            IUserService userService = new UserService(repositoryMock.Object, authenticationHelper);
-
             //Act
             var loginInputModel = new LoginInputModel {Username = "Aluong", Password = "Passw0rd"};
-            userService.ValidateUser(loginInputModel);
+            _userService.AuthenticateUser(loginInputModel);
 
             //Assert
-            repositoryMock.Verify(repo => repo.GetByName(user.Username), Times.Once);
+            _validatorMock.Verify(validator => validator.DefaultValidation(loginInputModel), Times.Once);
+        }
+
+        [Fact]
+        public void AuthenticateUser_ShouldCallUserRepositoryGetByNameWithTheLoginInputModelAsParam_Once()
+        {
+            //Act
+            var loginInputModel = new LoginInputModel {Username = "Aluong", Password = "Passw0rd"};
+            _userService.AuthenticateUser(loginInputModel);
+
+            //Assert
+            _repositoryMock.Verify(repository => repository.GetByName(_user.Username), Times.Once);
         }
 
         [Theory]
         [InlineData("Aluong", "Password")]
         [InlineData("anneluong", "Passw0rd")]
-        public void ValidateUser_WithInvalidUsernameOrPassword_ShouldThrowException(string username, string password)
+        public void AuthenticateUser_WithInvalidUsernameOrPassword_ShouldThrowException(string username,
+            string password)
         {
-            //Arrange
-            var repositoryMock = new Mock<IRepository<User>>();
-
-            var secretBytes = new byte[40];
-            var rand = new Random();
-            rand.NextBytes(secretBytes);
-            IAuthenticationHelper authenticationHelper = new AuthenticationHelper(secretBytes);
-
-            authenticationHelper.CreatePasswordHash("Passw0rd", out var passwordHash, out var passwordSalt);
-
-            var user = new User
-            {
-                Username = "Aluong",
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                IsAdmin = true
-            };
-
-            repositoryMock.Setup(repo => repo.GetByName(user.Username)).Returns(user);
-
-            IUserService userService = new UserService(repositoryMock.Object, authenticationHelper);
-
             //Act
             var loginInputModel = new LoginInputModel {Username = username, Password = password};
-            Action action = () => userService.ValidateUser(loginInputModel);
+            Action action = () => _userService.AuthenticateUser(loginInputModel);
 
             //Assert
             action.Should().Throw<ArgumentException>().WithMessage(username.Equals("Aluong")

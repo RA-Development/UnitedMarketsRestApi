@@ -22,7 +22,7 @@ namespace UnitedMarkets.UI.RestApi.Controllers
         {
             try
             {
-                var token = _userService.ValidateUser(loginInputModel);
+                var token = _userService.AuthenticateUser(loginInputModel);
 
                 return Ok(new
                 {

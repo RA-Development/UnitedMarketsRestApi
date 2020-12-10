@@ -14,7 +14,9 @@ using UnitedMarkets.Core.ApplicationServices.HelperServices;
 using UnitedMarkets.Core.ApplicationServices.Services;
 using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
+using UnitedMarkets.Core.Entities;
 using UnitedMarkets.Core.Entities.AuthenticationModels;
+using UnitedMarkets.Core.Filtering;
 using UnitedMarkets.Core.PriceCalculator;
 using UnitedMarkets.Infrastructure.Data;
 using UnitedMarkets.Infrastructure.Data.Repositories;
@@ -61,8 +63,9 @@ namespace UnitedMarkets.UI.RestApi
             // Register repositories and services for dependency injection.
             services.AddScoped<IDbInitializer, DbInitializer>();
             
-            services.AddScoped<IFilterValidator, FilterValidator>();
-            services.AddScoped<IProductValidator, ProductValidator>();
+            services.AddScoped<IValidator<Filter>, FilterValidator>();
+            services.AddScoped<IValidator<Product>, ProductValidator>();
+            services.AddScoped<IValidator<LoginInputModel>, LoginInputModelValidator>();
 
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 

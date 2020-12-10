@@ -3,7 +3,7 @@ using UnitedMarkets.Core.Filtering;
 
 namespace UnitedMarkets.Core.ApplicationServices.Validators
 {
-    public class FilterValidator : IFilterValidator
+    public class FilterValidator : IValidator<Filter>
     {
         public void DefaultValidation(Filter filter)
         {

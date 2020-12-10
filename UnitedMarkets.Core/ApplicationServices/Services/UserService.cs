@@ -8,9 +8,13 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
     public class UserService : IUserService
     {
         private readonly IAuthenticationHelper _authenticationHelper;
+        private readonly IValidator<LoginInputModel> _loginInputModelValidator;
         private readonly IRepository<User> _userRepository;
 
-        public UserService(IRepository<User> userRepository, IAuthenticationHelper authenticationHelper)
+        public UserService(
+            IRepository<User> userRepository,
+            IAuthenticationHelper authenticationHelper,
+            IValidator<LoginInputModel> loginInputModelValidator)
         {
             _userRepository = userRepository ??
                               throw new ArgumentNullException(nameof(userRepository),
@@ -18,10 +22,14 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
             _authenticationHelper = authenticationHelper ??
                                     throw new ArgumentNullException(nameof(authenticationHelper),
                                         "AuthenticationHelper cannot be null.");
+            _loginInputModelValidator = loginInputModelValidator ??
+                                        throw new ArgumentNullException(nameof(loginInputModelValidator),
+                                            "LoginInputModelValidator cannot be null.");
         }
 
-        public string ValidateUser(LoginInputModel loginInputModel)
+        public string AuthenticateUser(LoginInputModel loginInputModel)
         {
+            _loginInputModelValidator.DefaultValidation(loginInputModel);
             var user = FindUser(loginInputModel.Username);
 
             if (!_authenticationHelper.VerifyPasswordHash(loginInputModel.Password, user.PasswordHash,
