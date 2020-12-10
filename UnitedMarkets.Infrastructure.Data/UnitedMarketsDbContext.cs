@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnitedMarkets.Core.Entities;
+using UnitedMarkets.Core.Entities.AuthenticationModels;
 
 namespace UnitedMarkets.Infrastructure.Data
 {
@@ -49,9 +47,10 @@ namespace UnitedMarkets.Infrastructure.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<AmountUnit> AmountUnits { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderLine> Orderlines { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
         public DbSet<Market> Markets { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Origin> OriginCountries { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
