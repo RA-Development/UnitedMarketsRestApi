@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\UnitedMarkets.Core.Entities\UnitedMarkets.Core.Entities.csproj" />
     <ProjectReference Include="..\UnitedMarkets.Core.Filtering\UnitedMarkets.Core.Filtering.csproj" />
     <ProjectReference Include="..\UnitedMarkets.Core.PriceCalculator\UnitedMarkets.Core.PriceCalculator.csproj" />

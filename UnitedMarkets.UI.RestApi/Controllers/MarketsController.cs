@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UnitedMarkets.Core.ApplicationServices;
+using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.UI.RestApi.Controllers
 {
@@ -18,6 +22,21 @@ namespace UnitedMarkets.UI.RestApi.Controllers
         public IActionResult Index()
         {
             return Ok(_marketService.GetAll());
+        }
+
+        // GET: api/markets/admin TODO: Remove as it was made for test purposes.
+        [Authorize(Roles = "Administrator")]
+        [Route("admin")]
+        public ActionResult<IEnumerable<Market>> GetAll()
+        {
+            try
+            {
+                return Ok(_marketService.GetAll());
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"There was a problem loading all markets. \n{e.Message}");
+            }
         }
     }
 }

@@ -1,3 +1,5 @@
+using System;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,11 +7,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using UnitedMarkets.Core.ApplicationServices;
+using UnitedMarkets.Core.ApplicationServices.HelperServices;
 using UnitedMarkets.Core.ApplicationServices.Services;
 using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
+using UnitedMarkets.Core.Entities;
+using UnitedMarkets.Core.Entities.AuthenticationModels;
+using UnitedMarkets.Core.Filtering;
 using UnitedMarkets.Core.PriceCalculator;
 using UnitedMarkets.Infrastructure.Data;
 using UnitedMarkets.Infrastructure.Data.Repositories;
@@ -18,57 +25,92 @@ namespace UnitedMarkets.UI.RestApi
 {
     public class Startup
     {
-        public IConfiguration _conf { get; }
-        private IWebHostEnvironment _env { get; }
+        private IConfiguration Conf { get; }
+        private IWebHostEnvironment Env { get; }
 
 
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
-            _conf = configuration;
-            _env = webHostEnvironment;
+            Conf = configuration;
+            Env = webHostEnvironment;
         }
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (_env.IsDevelopment())
+            var loggerFactory = LoggerFactory.Create(builder => {
+                    builder.AddConsole();
+                }
+            ); 
+            if (Env.IsDevelopment())
             {
                 services.AddDbContext<UnitedMarketsDbContext>(opt =>
                 {
                     opt
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                        .UseLoggerFactory(loggerFactory)
                         .UseSqlite("Data Source=UnitedMarketsSqLite.db");
                     //.EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
             }
 
-            if (_env.IsProduction())
+            else
             {
+                // TODO: Azure SQL database.
             }
-
-            // Configure the default CORS policy.
-            services.AddCors(options =>
-                options.AddDefaultPolicy(
-                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyOrigin(); })
-            );
-
+            
+            // Register repositories and services for dependency injection.
             services.AddScoped<IDbInitializer, DbInitializer>();
-            services.AddScoped<IFilterValidator, FilterValidator>();
-            services.AddScoped<IProductValidator, ProductValidator>();
+            
+            services.AddScoped<IValidator<Filter>, FilterValidator>();
+            services.AddScoped<IValidator<Product>, ProductValidator>();
+            services.AddScoped<IValidator<LoginInputModel>, LoginInputModelValidator>();
 
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IMarketService, MarketService>();
+            services.AddScoped<IUserService, UserService>();
+            
             services.AddScoped<IMarketRepository, MarketSqLiteRepository>();
-
             services.AddScoped<IProductRepository, ProductSqLiteRepository>();
+            services.AddScoped<IRepository<User>, UserSqLiteRepository>();
 
             services.AddControllers().AddNewtonsoftJson(option =>
             {
                 option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
+            
+            // Configure the default CORS policy. TODO: Specified policies.
+            services.AddCors(options =>
+                options.AddDefaultPolicy(
+                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); })
+            );
+            
+            // Create a byte array with random values to generate a key for signing JWT tokens.
+            var secretBytes = new byte[40];
+            var rand = new Random();
+            rand.NextBytes(secretBytes);
+
+            // Add JWT based authentication
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    //ValidAudience = "TodoApiClient",
+                    ValidateIssuer = false,
+                    //ValidIssuer = "TodoApi",
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretBytes),
+                    ValidateLifetime = true, //validate the expiration and not before values in the token
+                    ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
+                };
+            });
+            
+            services.AddSingleton<IAuthenticationHelper>(new
+                AuthenticationHelper(secretBytes));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,19 +129,20 @@ namespace UnitedMarkets.UI.RestApi
                 dataInitializer.InitData();
             }
 
-
-            if (_env.IsProduction())
+            else
             {
+                //TODO: Production environment.
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
             
+            //TODO: Change to use policies specific to the environment.
             app.UseCors();
-
-            app.UseCors();
-
+            
+            app.UseAuthentication();
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

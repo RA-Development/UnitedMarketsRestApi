@@ -1,27 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using UnitedMarkets.Core.ApplicationServices.HelperServices;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
+using UnitedMarkets.Core.Entities.AuthenticationModels;
 
 namespace UnitedMarkets.Infrastructure.Data
 {
     public class DbInitializer : IDbInitializer
     {
+        private readonly IAuthenticationHelper _authenticationHelper;
         private readonly UnitedMarketsDbContext _ctx;
         private readonly IMarketRepository _marketRepository;
+        private int _userId;
 
-        public DbInitializer(UnitedMarketsDbContext ctx, IMarketRepository marketRepository)
+        public DbInitializer(
+            UnitedMarketsDbContext ctx,
+            IMarketRepository marketRepository,
+            IAuthenticationHelper authenticationHelper)
         {
             _ctx = ctx;
             _marketRepository = marketRepository;
+            _authenticationHelper = authenticationHelper;
         }
 
         public void InitData()
         {
             //    init amountUnits
-            _ctx.AmountUnits.Add(new AmountUnit() {Name = "piece"});
-            _ctx.AmountUnits.Add(new AmountUnit() {Name = "kg"});
+            _ctx.AmountUnits.Add(new AmountUnit {Name = "piece"});
+            _ctx.AmountUnits.Add(new AmountUnit {Name = "kg"});
             _ctx.SaveChanges();
 
             //    init markets
@@ -29,15 +35,15 @@ namespace UnitedMarkets.Infrastructure.Data
 
             _ctx.SaveChanges();
             //    init origins
-            _ctx.OriginCountries.Add(new Origin() {Name = "Spain"});
-            _ctx.OriginCountries.Add(new Origin() {Name = "Italy"});
+            _ctx.OriginCountries.Add(new Origin {Name = "Spain"});
+            _ctx.OriginCountries.Add(new Origin {Name = "Italy"});
             _ctx.SaveChanges();
             //    init categories
-            _ctx.Categories.Add(new Category() {Name = "Fruit & Vegetable"});
-            _ctx.Categories.Add(new Category() {Name = "Eggs & Dairy"});
-            _ctx.Categories.Add(new Category() {Name = "Baverages"});
+            _ctx.Categories.Add(new Category {Name = "Fruit & Vegetable"});
+            _ctx.Categories.Add(new Category {Name = "Eggs & Dairy"});
+            _ctx.Categories.Add(new Category {Name = "Baverages"});
             _ctx.SaveChanges();
-            var product1 = new Product()
+            var product1 = new Product
             {
                 Name = "Apples",
                 CategoryId = 1,
@@ -48,7 +54,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 AmountUnitId = 1
             };
 
-            var product2 = new Product()
+            var product2 = new Product
             {
                 Name = "Sugar",
                 CategoryId = 1,
@@ -59,7 +65,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 AmountUnitId = 2
             };
 
-            var product3 = new Product()
+            var product3 = new Product
             {
                 Name = "Grape",
                 CategoryId = 1,
@@ -70,7 +76,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 AmountUnitId = 1
             };
 
-            var product4 = new Product()
+            var product4 = new Product
             {
                 Name = "Banana",
                 CategoryId = 1,
@@ -80,7 +86,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 Amount = 4,
                 AmountUnitId = 1
             };
-            var product5 = new Product()
+            var product5 = new Product
             {
                 Name = "Kiwi",
                 CategoryId = 1,
@@ -90,7 +96,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 Amount = 1,
                 AmountUnitId = 1
             };
-            var product6 = new Product()
+            var product6 = new Product
             {
                 Name = "Coconut",
                 CategoryId = 1,
@@ -110,13 +116,46 @@ namespace UnitedMarkets.Infrastructure.Data
 
 
             _ctx.SaveChanges();
+
+            //    init users
+            InitUsers();
         }
 
         private void InitMarkets()
         {
-            _marketRepository.Create(new Market() {Name = "Fakta"});
-            _marketRepository.Create(new Market() {Name = "Irma"});
-            _marketRepository.Create(new Market() {Name = "Netto"});
+            _marketRepository.Create(new Market {Name = "Fakta"});
+            _marketRepository.Create(new Market {Name = "Irma"});
+            _marketRepository.Create(new Market {Name = "Netto"});
+            _ctx.SaveChanges();
+        }
+
+        private void InitUsers()
+        {
+            const string password = "abcd";
+            _authenticationHelper.CreatePasswordHash(password, out var passwordHashJohn, out var passwordSaltJohn);
+            _authenticationHelper.CreatePasswordHash(password, out var passwordHashJane, out var passwordSaltJane);
+
+            var users = new List<User>
+            {
+                new User
+                {
+                    Id = _userId++,
+                    Username = "UserJohnDoe",
+                    PasswordHash = passwordHashJohn,
+                    PasswordSalt = passwordSaltJohn,
+                    IsAdmin = false
+                },
+                new User
+                {
+                    Id = _userId++,
+                    Username = "AdminJaneDoe",
+                    PasswordHash = passwordHashJane,
+                    PasswordSalt = passwordSaltJane,
+                    IsAdmin = true
+                }
+            };
+
+            _ctx.Users.AddRange(users);
             _ctx.SaveChanges();
         }
     }

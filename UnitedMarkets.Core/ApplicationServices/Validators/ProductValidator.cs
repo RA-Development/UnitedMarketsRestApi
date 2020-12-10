@@ -3,7 +3,7 @@ using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Core.ApplicationServices.Validators
 {
-    public class ProductValidator : IProductValidator
+    public class ProductValidator : IValidator<Product>
     {
         public void DefaultValidation(Product product)
         {
