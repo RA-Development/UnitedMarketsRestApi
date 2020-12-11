@@ -2,40 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnitedMarkets.Core.DomainServices;
-using UnitedMarkets.Core.Entities.AuthenticationModels;
+using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Infrastructure.Data.Repositories
 {
-    public class UserSqLiteRepository : IRepository<User>
+    public class OrderSqLiteRepository : IRepository<Order>
     {
         private readonly UnitedMarketsDbContext _ctx;
 
-        public UserSqLiteRepository(UnitedMarketsDbContext ctx)
+        public OrderSqLiteRepository(UnitedMarketsDbContext ctx)
         {
             _ctx = ctx;
         }
 
-        public IEnumerable<User> ReadAll()
+        public IEnumerable<Order> ReadAll()
         {
-            return _ctx.Users.ToList();
+            return _ctx.Orders.ToList();
         }
 
-        public User ReadById(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User ReadByName(string username)
-        {
-            return _ctx.Users.ToList().FirstOrDefault(user => user.Username == username);
-        }
-
-        public User Create(User entity)
+        public Order ReadById(long id)
         {
             throw new NotImplementedException();
         }
 
-        public User Update(User entity)
+        public Order ReadByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Order Create(Order entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Order Update(Order entity)
         {
             throw new NotImplementedException();
         }

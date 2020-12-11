@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Core.ApplicationServices.Services
 {
-    public class MarketService : IMarketService
+    public class MarketService : IService<Market>
     {
-        private readonly IMarketRepository _marketRepository;
+        private readonly IRepository<Market> _marketRepository;
 
-        public MarketService(IMarketRepository marketRepository)
+        public MarketService(IRepository<Market> marketRepository)
         {
-            this._marketRepository = marketRepository
-                                     ?? throw new ArgumentNullException(nameof(marketRepository),"Repository cannot be null.");
+            _marketRepository = marketRepository
+                                ?? throw new ArgumentNullException(nameof(marketRepository),
+                                    "Repository cannot be null.");
         }
 
         public List<Market> GetAll()
         {
-            return _marketRepository.ReadAll();
+            return _marketRepository.ReadAll().ToList();
         }
     }
 }

@@ -10,6 +10,16 @@ namespace UnitedMarkets.Infrastructure.Data
         {
         }
 
+        public DbSet<Product> Products { get; set; }
+        public DbSet<AmountUnit> AmountUnits { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Market> Markets { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Origin> OriginCountries { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -41,16 +51,10 @@ namespace UnitedMarkets.Infrastructure.Data
                 .HasOne(ol => ol.Product)
                 .WithMany(p => p.Orders)
                 .HasForeignKey(ol => new {ol.ProductId});
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.OrderStatus)
+                .WithMany(os => os.Orders);
         }
-
-
-        public DbSet<Product> Products { get; set; }
-        public DbSet<AmountUnit> AmountUnits { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderLine> OrderLines { get; set; }
-        public DbSet<Market> Markets { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Origin> OriginCountries { get; set; }
-        public DbSet<User> Users { get; set; }
     }
 }

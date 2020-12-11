@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Core.ApplicationServices
 {
-    public interface IMarketService
+    public interface IService<T>
     {
-        List<Market> GetAll();
+        List<T> GetAll();
     }
 }

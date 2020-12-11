@@ -10,12 +10,12 @@ namespace UnitedMarkets.Infrastructure.Data
     {
         private readonly IAuthenticationHelper _authenticationHelper;
         private readonly UnitedMarketsDbContext _ctx;
-        private readonly IMarketRepository _marketRepository;
+        private readonly IRepository<Market> _marketRepository;
         private int _userId;
 
         public DbInitializer(
             UnitedMarketsDbContext ctx,
-            IMarketRepository marketRepository,
+            IRepository<Market> marketRepository,
             IAuthenticationHelper authenticationHelper)
         {
             _ctx = ctx;
@@ -114,6 +114,11 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Products.Add(product5);
             _ctx.Products.Add(product6);
 
+            //    init order status
+            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Pending"});
+            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Cancelled"});
+            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Confirmed"});
+            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Shipped"});
 
             _ctx.SaveChanges();
 

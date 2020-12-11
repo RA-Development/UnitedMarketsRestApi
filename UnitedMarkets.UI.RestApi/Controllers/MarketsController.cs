@@ -11,9 +11,9 @@ namespace UnitedMarkets.UI.RestApi.Controllers
     [ApiController]
     public class MarketsController : ControllerBase
     {
-        private readonly IMarketService _marketService;
+        private readonly IService<Market> _marketService;
 
-        public MarketsController(IMarketService marketService)
+        public MarketsController(IService<Market> marketService)
         {
             _marketService = marketService;
         }

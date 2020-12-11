@@ -70,10 +70,10 @@ namespace UnitedMarkets.UI.RestApi
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IMarketService, MarketService>();
+            services.AddScoped<IService<Market>, MarketService>();
             services.AddScoped<IUserService, UserService>();
             
-            services.AddScoped<IMarketRepository, MarketSqLiteRepository>();
+            services.AddScoped<IRepository<Market>, MarketSqLiteRepository>();
             services.AddScoped<IProductRepository, ProductSqLiteRepository>();
             services.AddScoped<IRepository<User>, UserSqLiteRepository>();
 
