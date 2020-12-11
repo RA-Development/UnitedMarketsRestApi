@@ -21,7 +21,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         private IFilterValidator _filterValidator;
         private Mock<IProductRepository> _repoMock;
 
-        
+
         public ProductServiceTest()
         {
             _productValidator = new ProductValidator();
@@ -42,8 +42,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         {
             Action action = () =>
                 new ProductService(null as IProductRepository, _filterValidator, _priceCalculator, _productValidator);
-            action.Should().Throw<NullReferenceException>()
-                .WithMessage(("Product Repository Cannot be Null."));
+            action.Should().Throw<ArgumentNullException>()
+                .WithMessage(("Repository Cannot be Null. (Parameter 'productRepository')"));
         }
 
         [Fact]
@@ -51,10 +51,28 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         {
             Action action = () =>
                 new ProductService(_repoMock.Object, null as IFilterValidator, _priceCalculator, _productValidator);
-            action.Should().Throw<NullReferenceException>()
-                .WithMessage(("Filter Validator Cannot be Null."));
+            action.Should().Throw<ArgumentNullException>()
+                .WithMessage(("Validator Cannot be Null. (Parameter 'filterValidator')"));
         }
 
+
+        [Fact]
+        public void NewProductService_WithNullProductValidator_ShouldThrowException()
+        {
+            Action action = () =>
+                new ProductService(_repoMock.Object, _filterValidator, _priceCalculator, null as IProductValidator);
+            action.Should().Throw<ArgumentNullException>()
+                .WithMessage(("Validator Cannot be Null. (Parameter 'productValidator')"));
+        }
+
+        [Fact]
+        public void NewProductService_WithNullPriceCalculator_ShouldThrowException()
+        {
+            Action action = () =>
+                new ProductService(_repoMock.Object, _filterValidator, null as IPriceCalculator, _productValidator);
+            action.Should().Throw<ArgumentNullException>()
+                .WithMessage(("Price Calculator Cannot be Null. (Parameter 'priceCalculator')"));
+        }
 
         [Fact]
         public void GetAllProducts__ShouldCallRepoWithFilterInParams_Once()

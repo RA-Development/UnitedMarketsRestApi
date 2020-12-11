@@ -38,8 +38,8 @@ namespace UnitedMarkets.UI.RestApi
                 {
                     opt
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                        .UseSqlite("Data Source=UnitedMarketsSqLite.db");
-                    //.EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
+                        .UseSqlite("Data Source=UnitedMarketsSqLite.db")
+                        .EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
             }
 
@@ -50,20 +50,23 @@ namespace UnitedMarkets.UI.RestApi
             // Configure the default CORS policy.
             services.AddCors(options =>
                 options.AddDefaultPolicy(
-                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyOrigin(); })
+                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); })
             );
 
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IFilterValidator, FilterValidator>();
             services.AddScoped<IProductValidator, ProductValidator>();
-
-            services.AddScoped<IPriceCalculator, PriceCalculator>();
+            services.AddScoped<IOrderValidator, OrderValidator>();
 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IMarketService, MarketService>();
-            services.AddScoped<IMarketRepository, MarketSqLiteRepository>();
+            services.AddScoped<IOrderService, OrderService>();
 
+            services.AddScoped<IMarketRepository, MarketSqLiteRepository>();
             services.AddScoped<IProductRepository, ProductSqLiteRepository>();
+            services.AddScoped<IOrderRepository, OrderSqLiteRepository>();
+
+            services.AddScoped<IPriceCalculator, PriceCalculator>();
 
             services.AddControllers().AddNewtonsoftJson(option =>
             {
@@ -95,8 +98,6 @@ namespace UnitedMarkets.UI.RestApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
-            app.UseCors();
 
             app.UseCors();
 

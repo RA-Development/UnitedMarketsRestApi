@@ -20,13 +20,17 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
             IProductValidator productValidator)
         {
             _productRepo = productRepository ??
-                           throw new NullReferenceException("Product Repository Cannot be Null.");
+                           throw new ArgumentNullException(nameof(productRepository),
+                               "Repository Cannot be Null.");
             _filterValidator = filterValidator ??
-                               throw new NullReferenceException("Filter Validator Cannot be Null.");
+                               throw new ArgumentNullException(nameof(filterValidator),
+                                   "Validator Cannot be Null.");
             _priceCalc = priceCalculator ??
-                         throw new NullReferenceException("Price Calculator Cannot be Null.");
+                         throw new ArgumentNullException(nameof(priceCalculator),
+                             "Price Calculator Cannot be Null.");
             _productValidator = productValidator ??
-                                throw new NullReferenceException("Product Validator Cannot be Null.");
+                                throw new ArgumentNullException(nameof(productValidator),
+                                    "Validator Cannot be Null.");
         }
 
         public FilteredList<Product> GetAllProducts(Filter filter)

@@ -8,6 +8,6 @@ namespace UnitedMarkets.Core.Entities
 
         public string Name { get; set; }
 
-        public List<Product> Products { get; set; }
+        public IEnumerable<Product> Products { get; set; }
     }
 }

@@ -16,8 +16,8 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
         }
 
         public List<Market> GetAll()
-        {
-            return _marketRepository.ReadAll();
+        {    
+            return _marketRepository.ReadAll();                
         }
     }
 }
