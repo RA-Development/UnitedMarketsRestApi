@@ -7,7 +7,6 @@ using UnitedMarkets.Core.ApplicationServices.Services;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 using Xunit;
-using Xunit.Sdk;
 
 namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
 {
@@ -54,7 +53,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             Action action = () => service.GetAll();
 
             //Assert TODO: Exception handling.
-            action.Should().Throw<System.ArgumentNullException>();
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -65,12 +64,14 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             {
                 new Order
                 {
-                    Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.MaxValue, TotalPrice = 100.45,
+                    Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-12),
+                    TotalPrice = 100.45,
                     BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
                 },
                 new Order
                 {
-                    Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.MinValue, TotalPrice = 222.95,
+                    Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-1),
+                    TotalPrice = 222.95,
                     BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
                 },
                 new Order
@@ -91,7 +92,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             {
                 new Order
                 {
-                    Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.MaxValue, TotalPrice = 100.45,
+                    Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-12),
+                    TotalPrice = 100.45,
                     BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
                 },
                 new Order
@@ -101,7 +103,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
                 },
                 new Order
                 {
-                    Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.MinValue, TotalPrice = 222.95,
+                    Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-1),
+                    TotalPrice = 222.95,
                     BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
                 }
             };

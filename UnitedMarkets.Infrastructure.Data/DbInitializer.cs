@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnitedMarkets.Core.ApplicationServices.HelperServices;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
@@ -41,7 +42,7 @@ namespace UnitedMarkets.Infrastructure.Data
             //    init categories
             _ctx.Categories.Add(new Category {Name = "Fruit & Vegetable"});
             _ctx.Categories.Add(new Category {Name = "Eggs & Dairy"});
-            _ctx.Categories.Add(new Category {Name = "Baverages"});
+            _ctx.Categories.Add(new Category {Name = "Beverages"});
             _ctx.SaveChanges();
             var product1 = new Product
             {
@@ -124,6 +125,12 @@ namespace UnitedMarkets.Infrastructure.Data
 
             //    init users
             InitUsers();
+
+            //    init orders
+            InitOrders();
+
+            //    init order lines
+            InitOrderLines();
         }
 
         private void InitMarkets()
@@ -161,6 +168,43 @@ namespace UnitedMarkets.Infrastructure.Data
             };
 
             _ctx.Users.AddRange(users);
+            _ctx.SaveChanges();
+        }
+
+        private void InitOrders()
+        {
+            var orders = new List<Order>
+            {
+                new Order
+                {
+                    Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.Now.AddDays(-12),
+                    TotalPrice = 42,
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
+                },
+                new Order
+                {
+                    Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.Now.AddDays(-2),
+                    TotalPrice = 222.95,
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
+                },
+                new Order
+                {
+                    Id = 3, Products = new List<OrderLine>(), DateCreated = DateTime.Now, TotalPrice = 1255.95,
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
+                }
+            };
+
+            _ctx.Orders.AddRange(orders);
+            _ctx.SaveChanges();
+        }
+
+        private void InitOrderLines()
+        {
+            _ctx.OrderLines.Add(new OrderLine {ProductId = 1, OrderId = 1, Quantity = 2, SubTotalPrice = 36});
+            _ctx.OrderLines.Add(new OrderLine {ProductId = 5, OrderId = 1, Quantity = 5, SubTotalPrice = 30});
+            _ctx.OrderLines.Add(new OrderLine {ProductId = 6, OrderId = 1, Quantity = 1, SubTotalPrice = 6});
+            _ctx.OrderLines.Add(new OrderLine {ProductId = 6, OrderId = 2, Quantity = 1, SubTotalPrice = 6});
+            _ctx.OrderLines.Add(new OrderLine {ProductId = 1, OrderId = 3, Quantity = 1, SubTotalPrice = 18});
             _ctx.SaveChanges();
         }
     }

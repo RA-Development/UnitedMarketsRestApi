@@ -17,7 +17,19 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
 
         public IEnumerable<Order> ReadAll()
         {
-            return _ctx.Orders.ToList();
+            return _ctx.Orders.Select(order => new Order
+            {
+                Id = order.Id,
+                DateCreated = order.DateCreated,
+                TotalPrice = order.TotalPrice,
+                OrderStatus = order.OrderStatus == null
+                    ? null
+                    : new OrderStatus
+                    {
+                        Id = order.OrderStatus.Id,
+                        Name = order.OrderStatus.Name
+                    }
+            }).ToList();
         }
 
         public Order ReadById(long id)

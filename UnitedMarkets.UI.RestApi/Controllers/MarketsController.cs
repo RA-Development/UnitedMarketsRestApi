@@ -19,15 +19,22 @@ namespace UnitedMarkets.UI.RestApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public ActionResult<IEnumerable<Market>> GetAll()
         {
-            return Ok(_marketService.GetAll());
+            try
+            {
+                return Ok(_marketService.GetAll());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         // GET: api/markets/admin TODO: Remove as it was made for test purposes.
         [Authorize(Roles = "Administrator")]
         [Route("admin")]
-        public ActionResult<IEnumerable<Market>> GetAll()
+        public ActionResult<IEnumerable<Market>> GetAllTest()
         {
             try
             {
