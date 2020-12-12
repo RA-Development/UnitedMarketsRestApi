@@ -40,7 +40,7 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
 
         private User FindUser(string username)
         {
-            var user = _userRepository.GetByName(username);
+            var user = _userRepository.ReadByName(username);
 
             if (user == null) throw new ArgumentException("Non-existing username.");
 

@@ -11,23 +11,30 @@ namespace UnitedMarkets.UI.RestApi.Controllers
     [ApiController]
     public class MarketsController : ControllerBase
     {
-        private readonly IMarketService _marketService;
+        private readonly IService<Market> _marketService;
 
-        public MarketsController(IMarketService marketService)
+        public MarketsController(IService<Market> marketService)
         {
             _marketService = marketService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public ActionResult<IEnumerable<Market>> GetAll()
         {
-            return Ok(_marketService.GetAll());
+            try
+            {
+                return Ok(_marketService.GetAll());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         // GET: api/markets/admin TODO: Remove as it was made for test purposes.
         [Authorize(Roles = "Administrator")]
         [Route("admin")]
-        public ActionResult<IEnumerable<Market>> GetAll()
+        public ActionResult<IEnumerable<Market>> GetAllTest()
         {
             try
             {

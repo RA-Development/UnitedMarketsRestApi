@@ -43,7 +43,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
                 IsAdmin = true
             };
 
-            _repositoryMock.Setup(repo => repo.GetByName(_user.Username)).Returns(_user);
+            _repositoryMock.Setup(repo => repo.ReadByName(_user.Username)).Returns(_user);
 
             _userService = new UserService(_repositoryMock.Object, _authenticationHelper,
                 _validatorMock.Object);
@@ -94,14 +94,14 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         }
 
         [Fact]
-        public void AuthenticateUser_ShouldCallUserRepositoryGetByNameWithTheLoginInputModelAsParam_Once()
+        public void AuthenticateUser_ShouldCallUserRepositoryReadByNameWithTheLoginInputModelAsParam_Once()
         {
             //Act
             var loginInputModel = new LoginInputModel {Username = "Aluong", Password = "Passw0rd"};
             _userService.AuthenticateUser(loginInputModel);
 
             //Assert
-            _repositoryMock.Verify(repository => repository.GetByName(_user.Username), Times.Once);
+            _repositoryMock.Verify(repository => repository.ReadByName(_user.Username), Times.Once);
         }
 
         [Theory]

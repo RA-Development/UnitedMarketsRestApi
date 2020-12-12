@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities.AuthenticationModels;
 
@@ -15,38 +15,34 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             _ctx = ctx;
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> ReadAll()
         {
             return _ctx.Users.ToList();
         }
 
-        public User Get(long id)
+        public User ReadById(long id)
         {
-            return _ctx.Users.FirstOrDefault(user => user.Id == id);
+            throw new NotImplementedException();
         }
 
-        public User GetByName(string username)
+        public User ReadByName(string username)
         {
             return _ctx.Users.ToList().FirstOrDefault(user => user.Username == username);
         }
 
-        public void Create(User entity)
+        public User Create(User entity)
         {
-            _ctx.Users.Add(entity);
-            _ctx.SaveChanges();
+            throw new NotImplementedException();
         }
 
-        public void Update(User entity)
+        public User Update(User entity)
         {
-            _ctx.Entry(entity).State = EntityState.Modified;
-            _ctx.SaveChanges();
+            throw new NotImplementedException();
         }
 
         public void Delete(long id)
         {
-            var item = _ctx.Users.FirstOrDefault(b => b.Id == id);
-            if (item != null) _ctx.Users.Remove(item);
-            _ctx.SaveChanges();
+            throw new NotImplementedException();
         }
     }
 }

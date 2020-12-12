@@ -1,17 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Infrastructure.Data.Repositories
 {
-    public class MarketSqLiteRepository : IMarketRepository
+    public class MarketSqLiteRepository : IRepository<Market>
     {
         private readonly UnitedMarketsDbContext _ctx;
 
         public MarketSqLiteRepository(UnitedMarketsDbContext ctx)
         {
             _ctx = ctx;
+        }
+
+        public IEnumerable<Market> ReadAll()
+        {
+            return _ctx.Markets.Select(market => new Market
+            {
+                Id = market.Id,
+                Name = market.Name
+            }).ToList();
+        }
+
+        public Market ReadById(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Market ReadByName(string name)
+        {
+            throw new NotImplementedException();
         }
 
         public Market Create(Market market)
@@ -29,13 +49,14 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             };
         }
 
-        public List<Market> ReadAll()
+        public Market Update(Market entity)
         {
-            return _ctx.Markets.Select(market => new Market
-            {
-                Id = market.Id,
-                Name = market.Name
-            }).ToList();
+            throw new NotImplementedException();
+        }
+
+        public void Delete(long id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
