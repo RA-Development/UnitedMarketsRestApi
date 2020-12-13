@@ -32,5 +32,19 @@ namespace UnitedMarkets.UI.RestApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        // POST
+        [HttpPost]
+        public ActionResult Post([FromBody] Order order)
+        {
+            try
+            {
+                return Ok(_orderService.Create(order));
+            }
+            catch (System.Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
