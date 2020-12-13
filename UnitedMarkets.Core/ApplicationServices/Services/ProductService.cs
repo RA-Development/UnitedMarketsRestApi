@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 using UnitedMarkets.Core.Filtering;
@@ -6,15 +7,15 @@ using UnitedMarkets.Core.PriceCalculator;
 
 namespace UnitedMarkets.Core.ApplicationServices.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : IService<Product>
     {
-        private IProductRepository _productRepo;
+        private IRepository<Product> _productRepo;
         private IValidator<Filter> _filterValidator;
         private IPriceCalculator _priceCalc;
         private IValidator<Product> _productValidator;
 
         public ProductService(
-            IProductRepository productRepository,
+            IRepository<Product> productRepository,
             IValidator<Filter> filterValidator,
             IPriceCalculator priceCalculator,
             IValidator<Product> productValidator)
@@ -29,10 +30,10 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
                                 throw new NullReferenceException("Product Validator Cannot be Null.");
         }
 
-        public FilteredList<Product> GetAllProducts(Filter filter)
+        public FilteredList<Product> GetAll(Filter filter)
         {
             _filterValidator.DefaultValidation(filter);
-            var filteredList = _productRepo.GetAllProducts(filter);
+            var filteredList = _productRepo.ReadAll(filter);
             foreach (var product in filteredList.List)
             {
                 _productValidator.DefaultValidation(product);
@@ -40,6 +41,16 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
             }
 
             return filteredList;
+        }
+
+        public Product Create(Product entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Product> GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

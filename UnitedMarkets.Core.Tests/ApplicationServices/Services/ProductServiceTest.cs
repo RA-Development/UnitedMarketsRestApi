@@ -19,29 +19,29 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         private IValidator<Product> _productValidator;
         private IPriceCalculator _priceCalculator;
         private IValidator<Filter> _filterValidator;
-        private Mock<IProductRepository> _repoMock;
+        private Mock<IRepository<Product>> _repoMock;
 
-        
+
         public ProductServiceTest()
         {
             _productValidator = new ProductValidator();
             _priceCalculator = new PriceCalculator.PriceCalculator();
             _filterValidator = new FilterValidator();
-            _repoMock = new Mock<IProductRepository>();
+            _repoMock = new Mock<IRepository<Product>>();
         }
 
         [Fact]
         public void ProductService_IsOfTypeIProductService()
         {
             new ProductService(_repoMock.Object, _filterValidator, _priceCalculator, _productValidator)
-                .Should().BeAssignableTo<IProductService>();
+                .Should().BeAssignableTo<IService<Product>>();
         }
 
         [Fact]
         public void NewProductService_WithNullRepository_ShouldThrowException()
         {
             Action action = () =>
-                new ProductService(null as IProductRepository, _filterValidator, _priceCalculator, _productValidator);
+                new ProductService(null as IRepository<Product>, _filterValidator, _priceCalculator, _productValidator);
             action.Should().Throw<NullReferenceException>()
                 .WithMessage(("Product Repository Cannot be Null."));
         }
@@ -59,13 +59,13 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         [Fact]
         public void GetAllProducts__ShouldCallRepoWithFilterInParams_Once()
         {
-            IProductService productService =
+            IService<Product> productService =
                 new ProductService(_repoMock.Object, _filterValidator, _priceCalculator, _productValidator);
             var filter = new Filter() {MarketId = 1};
             _repoMock.Setup(m
-                => m.GetAllProducts(filter)).Returns(() => new FilteredList<Product>() {List = new List<Product>()});
-            productService.GetAllProducts(filter);
-            _repoMock.Verify(repo => repo.GetAllProducts(filter), Times.Once);
+                => m.ReadAll(filter)).Returns(() => new FilteredList<Product>() {List = new List<Product>()});
+            productService.GetAll(filter);
+            _repoMock.Verify(repo => repo.ReadAll(filter), Times.Once);
         }
     }
 }

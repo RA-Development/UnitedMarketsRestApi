@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnitedMarkets.Core.DomainServices;
+using UnitedMarkets.Core.Entities;
 using UnitedMarkets.Core.Entities.AuthenticationModels;
+using UnitedMarkets.Core.Filtering;
 
 namespace UnitedMarkets.Infrastructure.Data.Repositories
 {
@@ -41,6 +43,11 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
         }
 
         public void Delete(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FilteredList<Product> ReadAll(Filter filter)
         {
             throw new NotImplementedException();
         }

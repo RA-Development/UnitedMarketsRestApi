@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Services;
+using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 using Xunit;
@@ -13,23 +14,25 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
     public class OrderServiceTest
     {
         private readonly Mock<IRepository<Order>> _repositoryMock;
+        private readonly IValidator<Order> _orderValidator;
 
         public OrderServiceTest()
         {
             _repositoryMock = new Mock<IRepository<Order>>();
+            _orderValidator = new OrderValidator();
         }
 
         [Fact]
         public void OrderService_ShouldBeOfTypeIServiceOrder()
         {
-            new OrderService(_repositoryMock.Object).Should().BeAssignableTo<IService<Order>>();
+            new OrderService(_repositoryMock.Object, _orderValidator).Should().BeAssignableTo<IService<Order>>();
         }
 
         [Fact]
         public void NewOrderService_WithNullRepository_ShouldThrowException()
         {
             Action action = () =>
-                new OrderService(null);
+                new OrderService(null, _orderValidator);
             action.Should().Throw<ArgumentNullException>()
                 .WithMessage("Repository cannot be null. (Parameter 'orderRepository')");
         }
@@ -37,7 +40,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         [Fact]
         public void GetAll_ShouldCallOrderRepositoryReadAll_Once()
         {
-            IService<Order> service = new OrderService(_repositoryMock.Object);
+            IService<Order> service = new OrderService(_repositoryMock.Object, _orderValidator);
             service.GetAll();
             _repositoryMock.Verify(repository => repository.ReadAll(), Times.Once);
         }
@@ -47,7 +50,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         {
             //Arrange
             _repositoryMock.Setup(repo => repo.ReadAll()).Returns(() => null);
-            var service = new OrderService(_repositoryMock.Object);
+            var service = new OrderService(_repositoryMock.Object, _orderValidator);
 
             //Act
             Action action = () => service.GetAll();
@@ -82,7 +85,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             };
 
             _repositoryMock.Setup(repo => repo.ReadAll()).Returns(() => returnValue);
-            var service = new OrderService(_repositoryMock.Object);
+            var service = new OrderService(_repositoryMock.Object, _orderValidator);
 
             //Act
             var actual = service.GetAll();

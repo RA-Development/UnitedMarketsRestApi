@@ -54,24 +54,29 @@ namespace UnitedMarkets.UI.RestApi
             else // TODO: Azure SQL database.
             {
             }
+
             // Register repositories and services for dependency injection.
             services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddScoped<IValidator<Filter>, FilterValidator>();
             services.AddScoped<IValidator<Product>, ProductValidator>();
             services.AddScoped<IValidator<LoginInputModel>, LoginInputModelValidator>();
+            services.AddScoped<IValidator<Order>, OrderValidator>();
+
 
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 
             services.AddScoped<IService<Market>, MarketService>();
-            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IService<Order>, OrderService>();
+            services.AddScoped<IService<Product>, ProductService>();
+
 
             services.AddScoped<IRepository<Market>, MarketSqLiteRepository>();
-            services.AddScoped<IProductRepository, ProductSqLiteRepository>();
             services.AddScoped<IRepository<User>, UserSqLiteRepository>();
             services.AddScoped<IRepository<Order>, OrderSqLiteRepository>();
+            services.AddScoped<IRepository<Product>, ProductSqLiteRepository>();
+
 
             services.AddControllers().AddNewtonsoftJson(option =>
             {
@@ -127,6 +132,7 @@ namespace UnitedMarkets.UI.RestApi
             else //TODO: Production environment.
             {
             }
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
