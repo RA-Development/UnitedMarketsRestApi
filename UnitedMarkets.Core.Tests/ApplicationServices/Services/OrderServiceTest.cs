@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using Moq;
 using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Services;
@@ -15,11 +16,13 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
     {
         private readonly Mock<IRepository<Order>> _repositoryMock;
         private readonly IValidator<Order> _orderValidator;
+        private IService<Order> _orderService;
 
         public OrderServiceTest()
         {
             _repositoryMock = new Mock<IRepository<Order>>();
             _orderValidator = new OrderValidator();
+            _orderService = new OrderService(_repositoryMock.Object, _orderValidator);
         }
 
         [Fact]
@@ -38,10 +41,18 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         }
 
         [Fact]
+        public void NewService_WithNullValidator_ShouldThrowException()
+        {
+            Action action = () => new OrderService(_repositoryMock.Object, null as OrderValidator);
+            action.Should().Throw<ArgumentNullException>()
+                .WithMessage("Validator Cannot be Null. (Parameter 'orderValidator')");
+        }
+
+
+        [Fact]
         public void GetAll_ShouldCallOrderRepositoryReadAll_Once()
         {
-            IService<Order> service = new OrderService(_repositoryMock.Object, _orderValidator);
-            service.GetAll();
+            _orderService.GetAll();
             _repositoryMock.Verify(repository => repository.ReadAll(), Times.Once);
         }
 
@@ -50,10 +61,9 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         {
             //Arrange
             _repositoryMock.Setup(repo => repo.ReadAll()).Returns(() => null);
-            var service = new OrderService(_repositoryMock.Object, _orderValidator);
 
             //Act
-            Action action = () => service.GetAll();
+            Action action = () => _orderService.GetAll();
 
             //Assert TODO: Exception handling.
             action.Should().Throw<ArgumentNullException>();
@@ -85,10 +95,10 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             };
 
             _repositoryMock.Setup(repo => repo.ReadAll()).Returns(() => returnValue);
-            var service = new OrderService(_repositoryMock.Object, _orderValidator);
+
 
             //Act
-            var actual = service.GetAll();
+            var actual = _orderService.GetAll();
 
             //Assert
             var expected = new List<Order>
@@ -113,6 +123,76 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             };
 
             actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void CreateOrder_WithOrderInParams_ShouldCallRepoOnce()
+        {
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+
+            var order = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                BillingAddress = "Esbjerg 7",
+                ShippingAddress = "Esbjerg 8",
+                TotalPrice = 15.85,
+                OrderStatusId = 4,
+            };
+            _orderService.Create(order);
+
+            _repositoryMock.Verify(repo => repo.Create(order), Times.Once);
+        }
+
+
+        [Fact]
+        public void CreateOrder_OrderWithValidParams_ShouldReturnOrder()
+        {
+            //    Arrange
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+
+            var order = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                ShippingAddress = "Esbjerg 8",
+                BillingAddress = "Esbjerg 8",
+                TotalPrice = 74.30,
+                OrderStatusId = 4,
+            };
+
+            var createdOrder = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                ShippingAddress = "Esbjerg 8",
+                BillingAddress = "Esbjerg 8",
+                TotalPrice = 74.30,
+                OrderStatusId = 4,
+                DateCreated = DateTime.Now
+            };
+
+            _repositoryMock.Setup(m => m.Create(order))
+                .Returns(() => createdOrder);
+
+            var expected = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                ShippingAddress = "Esbjerg 8",
+                BillingAddress = "Esbjerg 8",
+                TotalPrice = 74.30,
+                OrderStatusId = 4,
+                DateCreated = DateTime.Now
+            };
+            //Act
+            var actual = _orderService.Create(order);
+            //Assert
+
+            actual.Products.Should().BeEquivalentTo(expected.Products);
+            actual.ShippingAddress.Should().BeEquivalentTo(expected.ShippingAddress);
+            actual.BillingAddress.Should().BeEquivalentTo(expected.BillingAddress);
+            actual.OrderStatus.Should().BeEquivalentTo(expected.OrderStatus);
+            actual.TotalPrice.Should().Be(expected.TotalPrice);
+            actual.DateCreated.Should().BeCloseTo(expected.DateCreated, 10.Seconds());
         }
     }
 }

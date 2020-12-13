@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 using UnitedMarkets.Core.Filtering;
