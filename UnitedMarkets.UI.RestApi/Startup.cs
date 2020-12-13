@@ -47,14 +47,21 @@ namespace UnitedMarkets.UI.RestApi
                     opt
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                         .UseLoggerFactory(loggerFactory)
-                        .UseSqlite("Data Source=UnitedMarketsSqLite.db");
-                    //.EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
+                        .UseSqlite("Data Source=UnitedMarketsSqLite.db")
+                        .EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
             }
             else // TODO: Azure SQL database.
             {
             }
+            
+            services.AddControllers().AddNewtonsoftJson(option =>
+            {
+                option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
+
             // Register repositories and services for dependency injection.
+            
             services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddScoped<IValidator<Filter>, FilterValidator>();
@@ -64,19 +71,15 @@ namespace UnitedMarkets.UI.RestApi
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 
             services.AddScoped<IService<Market>, MarketService>();
-            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IService<Product>, ProductService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IService<Order>, OrderService>();
 
             services.AddScoped<IRepository<Market>, MarketSqLiteRepository>();
-            services.AddScoped<IProductRepository, ProductSqLiteRepository>();
+            services.AddScoped<IRepository<Product>, ProductSqLiteRepository>();
             services.AddScoped<IRepository<User>, UserSqLiteRepository>();
             services.AddScoped<IRepository<Order>, OrderSqLiteRepository>();
-
-            services.AddControllers().AddNewtonsoftJson(option =>
-            {
-                option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            });
+            
 
             // Configure the default CORS policy. TODO: Specified policies.
             services.AddCors(options =>
@@ -127,6 +130,7 @@ namespace UnitedMarkets.UI.RestApi
             else //TODO: Production environment.
             {
             }
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

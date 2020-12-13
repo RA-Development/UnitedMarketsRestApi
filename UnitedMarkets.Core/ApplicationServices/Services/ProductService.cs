@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 using UnitedMarkets.Core.Filtering;
@@ -6,33 +7,37 @@ using UnitedMarkets.Core.PriceCalculator;
 
 namespace UnitedMarkets.Core.ApplicationServices.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : IService<Product>
     {
-        private IProductRepository _productRepo;
-        private IValidator<Filter> _filterValidator;
-        private IPriceCalculator _priceCalc;
-        private IValidator<Product> _productValidator;
+        private readonly IRepository<Product> _productRepo;
+        private readonly IValidator<Filter> _filterValidator;
+        private readonly IPriceCalculator _priceCalc;
+        private readonly IValidator<Product> _productValidator;
 
         public ProductService(
-            IProductRepository productRepository,
+            IRepository<Product> productRepository,
             IValidator<Filter> filterValidator,
             IPriceCalculator priceCalculator,
             IValidator<Product> productValidator)
         {
             _productRepo = productRepository ??
-                           throw new NullReferenceException("Product Repository Cannot be Null.");
+                           throw new ArgumentNullException(nameof(productRepository),
+                               "Repository Cannot be Null.");
             _filterValidator = filterValidator ??
-                               throw new NullReferenceException("Filter Validator Cannot be Null.");
+                               throw new ArgumentNullException(nameof(filterValidator),
+                                   "Validator Cannot be Null.");
             _priceCalc = priceCalculator ??
-                         throw new NullReferenceException("Price Calculator Cannot be Null.");
+                         throw new ArgumentNullException(nameof(priceCalculator),
+                             "Price Calculator Cannot be Null.");
             _productValidator = productValidator ??
-                                throw new NullReferenceException("Product Validator Cannot be Null.");
+                                throw new ArgumentNullException(nameof(productValidator),
+                                    "Validator Cannot be Null.");
         }
 
-        public FilteredList<Product> GetAllProducts(Filter filter)
+        public FilteredList<Product> GetAll(Filter filter)
         {
             _filterValidator.DefaultValidation(filter);
-            var filteredList = _productRepo.GetAllProducts(filter);
+            var filteredList = _productRepo.ReadAll(filter);
             foreach (var product in filteredList.List)
             {
                 _productValidator.DefaultValidation(product);
@@ -40,6 +45,16 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
             }
 
             return filteredList;
+        }
+
+        public Product Create(Product entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Product> GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
+using UnitedMarkets.Core.Filtering;
 
 namespace UnitedMarkets.Core.ApplicationServices.Services
 {
@@ -20,6 +21,16 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
         public List<Market> GetAll()
         {
             return _marketRepository.ReadAll().ToList();
+        }
+
+        public FilteredList<Market> GetAll(Filter filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Market Create(Market entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

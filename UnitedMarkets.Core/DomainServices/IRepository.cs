@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Serialization;
+using UnitedMarkets.Core.Filtering;
 
 namespace UnitedMarkets.Core.DomainServices
 {
@@ -10,5 +12,6 @@ namespace UnitedMarkets.Core.DomainServices
         T Create(T entity);
         T Update(T entity);
         void Delete(long id);
+        FilteredList<T> ReadAll(Filter filter);
     }
 }

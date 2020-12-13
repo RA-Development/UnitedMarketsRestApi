@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
+using UnitedMarkets.Core.Filtering;
 
 namespace UnitedMarkets.Infrastructure.Data.Repositories
 {
@@ -55,6 +56,11 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
         }
 
         public void Delete(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FilteredList<Market> ReadAll(Filter filter)
         {
             throw new NotImplementedException();
         }

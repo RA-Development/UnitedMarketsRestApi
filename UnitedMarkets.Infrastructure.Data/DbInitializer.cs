@@ -48,9 +48,9 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Apples",
                 CategoryId = 1,
-                MarketId = 1,
+                MarketId = 2,
                 OriginId = 1,
-                PricePerUnit = 4.95,
+                PricePerUnit = 5,
                 Amount = 6,
                 AmountUnitId = 1
             };
@@ -59,7 +59,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Sugar",
                 CategoryId = 1,
-                MarketId = 1,
+                MarketId = 3,
                 OriginId = 2,
                 PricePerUnit = 3.10,
                 Amount = 2,
@@ -70,11 +70,11 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Grape",
                 CategoryId = 1,
-                MarketId = 2,
+                MarketId = 1,
                 OriginId = 1,
                 PricePerUnit = 6.00,
-                Amount = 3,
-                AmountUnitId = 1
+                Amount = 1,
+                AmountUnitId = 2
             };
 
             var product4 = new Product
@@ -131,6 +131,14 @@ namespace UnitedMarkets.Infrastructure.Data
 
             //    init order lines
             InitOrderLines();
+
+            _ctx.OrderStatuses.Add(new OrderStatus() {Name = "Pending"});
+            _ctx.OrderStatuses.Add(new OrderStatus() {Name = "Cancelled"});
+            _ctx.OrderStatuses.Add(new OrderStatus() {Name = "Confirmed"});
+            _ctx.OrderStatuses.Add(new OrderStatus() {Name = "Shipped"});
+            _ctx.SaveChanges();
+
+            
         }
 
         private void InitMarkets()

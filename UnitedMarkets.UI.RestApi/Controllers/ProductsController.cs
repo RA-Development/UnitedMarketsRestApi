@@ -15,9 +15,9 @@ namespace UnitedMarkets.UI.RestApi.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private IProductService _productService;
+        private IService<Product> _productService;
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IService<Product> productService)
         {
             _productService = productService;
         }
@@ -29,8 +29,8 @@ namespace UnitedMarkets.UI.RestApi.Controllers
         {
             try
             {
-                if (_productService.GetAllProducts(filter) != null)
-                    return Ok(_productService.GetAllProducts(filter));
+                if (_productService.GetAll(filter) != null)
+                    return Ok(_productService.GetAll(filter));
                 else
                     return BadRequest("something is wrong with the filter");
             }

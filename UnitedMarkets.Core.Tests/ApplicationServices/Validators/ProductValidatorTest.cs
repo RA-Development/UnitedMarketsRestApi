@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.Entities;
 using Xunit;
@@ -8,8 +9,14 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
 {
     public class ProductValidatorTest
     {
-        private AmountUnit _kgAmount;
-        private ProductValidator _productValidator;
+        private readonly AmountUnit _kgAmount;
+        private readonly ProductValidator _productValidator;
+
+        [Fact]
+        public void ProductValidator_ShouldBeOfTypeIProductValidator()
+        {
+            new ProductValidator().Should().BeAssignableTo<IValidator<Product>>();
+        }
 
 
         public ProductValidatorTest()
@@ -17,6 +24,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
             _kgAmount = new AmountUnit() {Id = 2, Name = "kg"};
             _productValidator = new ProductValidator();
         }
+
 
         [Fact]
         public void DefaultValidation_ProductWithNegativePricePerUnit_ThrowsArgumentException()
@@ -35,7 +43,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
             };
 
             Action action = () => _productValidator.DefaultValidation(product);
-            action.Should().Throw<ArgumentException>().WithMessage("Positive value required for product price.");
+            action.Should().Throw<ArgumentException>()
+                .WithMessage("Positive value required for product price.");
         }
 
 
@@ -56,7 +65,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
             };
 
             Action action = () => _productValidator.DefaultValidation(product);
-            action.Should().Throw<ArgumentException>().WithMessage("Positive value required for product amount.");
+            action.Should().Throw<ArgumentException>()
+                .WithMessage("Positive value required for product amount.");
         }
     }
 }
