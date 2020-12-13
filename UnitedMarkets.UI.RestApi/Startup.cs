@@ -67,6 +67,7 @@ namespace UnitedMarkets.UI.RestApi
             services.AddScoped<IValidator<Filter>, FilterValidator>();
             services.AddScoped<IValidator<Product>, ProductValidator>();
             services.AddScoped<IValidator<LoginInputModel>, LoginInputModelValidator>();
+            services.AddScoped<IValidator<Order>, OrderValidator>();
 
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 
