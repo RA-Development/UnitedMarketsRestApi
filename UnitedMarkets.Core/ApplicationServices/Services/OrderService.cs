@@ -22,8 +22,8 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
 
         public Order CreateOrder(Order order)
         {
-            _orderValidator.DefaultValidation(order);
             order.DateCreated = DateTime.Now;
+            _orderValidator.DefaultValidation(order);
             return _orderRepo.CreateOrder(order);
         }
     }

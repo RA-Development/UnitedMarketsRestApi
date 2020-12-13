@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Enumeration;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using Moq;
 using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Services;
@@ -67,10 +68,11 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             _orderRepoMock.Verify(repo => repo.CreateOrder(order), Times.Once);
         }
 
-        /*
+
         [Fact]
-        public void CreateOrder_OrderWithoutDateCreated_ShouldReturnOrderWithDateCreated()
+        public void CreateOrder_OrderWithValidParams_ShouldReturnOrder()
         {
+            //    Arrange
             var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
             var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
 
@@ -92,11 +94,29 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
                 OrderStatusId = 4,
                 DateCreated = DateTime.Now
             };
-            _orderService.CreateOrder(order);
+
             _orderRepoMock.Setup(m => m.CreateOrder(order))
                 .Returns(() => createdOrder);
-            createdOrder.DateCreated.Second.Should().Be(DateTime.Now.Second);
+
+            var expected = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                ShippingAddress = "Esbjerg 8",
+                BillingAddress = "Esbjerg 8",
+                TotalPrice = 74.30,
+                OrderStatusId = 4,
+                DateCreated = DateTime.Now
+            };
+            //Act
+            var actual = _orderService.CreateOrder(order);
+            //Assert
+
+            actual.Products.Should().BeEquivalentTo(expected.Products);
+            actual.ShippingAddress.Should().BeEquivalentTo(expected.ShippingAddress);
+            actual.BillingAddress.Should().BeEquivalentTo(expected.BillingAddress);
+            actual.OrderStatus.Should().BeEquivalentTo(expected.OrderStatus);
+            actual.TotalPrice.Should().Be(expected.TotalPrice);
+            actual.DateCreated.Should().BeCloseTo(expected.DateCreated, 10.Seconds());
         }
-        */
     }
 }

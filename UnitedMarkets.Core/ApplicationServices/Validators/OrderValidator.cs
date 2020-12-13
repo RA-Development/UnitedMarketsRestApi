@@ -13,9 +13,7 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
                 throw new ArgumentNullException(nameof(order),
                     "Order Cannot be Null.");
 
-            //    order.DateCreated = DateTime.Now.AddSeconds(8);
-
-            //    ValidateDateCreated(order);
+            ValidateDateCreated(order.DateCreated);
             ValidateProductList(order);
             ValidatePrice(order);
             ValidateBillingAddress(order);
@@ -23,10 +21,17 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
             ValidatePendingStatus(order);
         }
 
-        private void ValidateDateCreated(Order order)
+        private void ValidateDateCreated(DateTime dateCreated)
         {
-            if (order.DateCreated.Second != DateTime.Now.Second)
-                throw new ArgumentException("Order creation date is invalid.");
+            var startDate = DateTime.Now.AddSeconds(-5);
+            var endDate = DateTime.Now.AddSeconds(5);
+
+            if (dateCreated < startDate)
+                throw new ArgumentException("Order creation date is set to past value. " +
+                                            "Please input current date with 5 second precision.");
+            if (dateCreated < startDate || dateCreated > endDate)
+                throw new ArgumentException("Order creation date is set to future value. " +
+                                            "Please input current date with 5 second precision.");
         }
 
 
