@@ -70,12 +70,14 @@ namespace UnitedMarkets.UI.RestApi
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IService<Order>, OrderService>();
             services.AddScoped<IService<Product>, ProductService>();
+            services.AddScoped<IService<OrderStatus>, StatusService>();
 
 
             services.AddScoped<IRepository<Market>, MarketSqLiteRepository>();
             services.AddScoped<IRepository<User>, UserSqLiteRepository>();
             services.AddScoped<IRepository<Order>, OrderSqLiteRepository>();
             services.AddScoped<IRepository<Product>, ProductSqLiteRepository>();
+            services.AddScoped<IRepository<OrderStatus>, StatusSqLiteRepository>();
 
 
             services.AddControllers().AddNewtonsoftJson(option =>
