@@ -7,5 +7,6 @@ namespace UnitedMarkets.Core.ApplicationServices
         void IdValidation(long id);
         void StatusValidation(T entity, string requiredStatus);
         void DateCreatedValidation(T entity);
+        void IsDeletedValidation(T entity);
     }
 }

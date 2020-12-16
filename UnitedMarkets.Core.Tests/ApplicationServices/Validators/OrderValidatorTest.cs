@@ -45,7 +45,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
 
         [Theory]
         [MemberData(nameof(ProductListTestMemberData))]
-        public void DefaultValidation_WithNullOrEmptyProductListInOrderParam_ShouldThrowException(List<OrderLine> products)
+        public void DefaultValidation_WithNullOrEmptyProductListInOrderParam_ShouldThrowException(
+            List<OrderLine> products)
         {
             var order = new Order
             {
@@ -61,7 +62,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void DefaultValidation_WithNullOrEmptyBillingAddressInOrderParam_ShouldThrowException(string billingAddress)
+        public void DefaultValidation_WithNullOrEmptyBillingAddressInOrderParam_ShouldThrowException(
+            string billingAddress)
         {
             var orderLine1 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
             var orderLine2 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
@@ -80,7 +82,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void DefaultValidation_WithNullOrEmptyShippingAddressInOrderParam_ShouldThrowException(string shippingAddress)
+        public void DefaultValidation_WithNullOrEmptyShippingAddressInOrderParam_ShouldThrowException(
+            string shippingAddress)
         {
             var orderLine1 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
             var orderLine2 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
@@ -138,23 +141,24 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
             action.Should().Throw<ArgumentException>().WithMessage("Id cannot be less than 1.");
         }
 
-        public static TheoryData<Order,string> OrderStatusTestMemberData = new TheoryData<Order,string>
+        [Fact]
+        public void StatusValidation_WithNullOrUnexpectedOrderStatusInOrderParam_ShouldThrowException()
         {
-            {new Order(), "Pending"},
-            {new Order {OrderStatus = new OrderStatus {Id = 1, Name = "Pending"}},"Deleted"}
-        };
-        
-        [Theory]
-        [MemberData(nameof(OrderStatusTestMemberData))]
-        public void StatusValidation_WithNullOrUnexpectedOrderStatusInOrderParam_ShouldThrowException(Order order, string requiredStatus)
-        {
+            var order = new Order();
+            const string requiredStatus = "Pending";
             Action action = () => _orderValidator.StatusValidation(order, requiredStatus);
-            
-            if(order.OrderStatus == null)
+
+            if (order.OrderStatus == null)
                 action.Should().Throw<ArgumentNullException>()
                     .WithMessage("Status cannot be null. (Parameter 'OrderStatus')");
-            else
-                action.Should().Throw<ArgumentException>().WithMessage("Status should be \"Deleted\".");
+        }
+
+        [Fact]
+        public void IsDeletedValidation_WithIsDeletedAsFalse_ShouldThrowException()
+        {
+            var order = new Order {IsDeleted = false};
+            Action action = () => _orderValidator.IsDeletedValidation(order);
+            action.Should().Throw<ArgumentException>().WithMessage("IsDeleted cannot be false.");
         }
     }
 }

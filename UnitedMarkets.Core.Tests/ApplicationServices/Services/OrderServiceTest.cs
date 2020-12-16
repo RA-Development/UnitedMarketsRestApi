@@ -168,8 +168,6 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             actual.DateCreated.Should().BeCloseTo(expected.DateCreated, 10.Seconds());
         }
 
-        //public void Create_ShouldCallOrderValidatorDefaultValidationWithOrderParam_Once()
-
         [Fact]
         public void Delete_ShouldCallOrderRepositoryDeleteWithIdParam_Once()
         {
@@ -179,8 +177,8 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
                 Products = new List<OrderLine>(),
                 DateCreated = DateTime.Now,
                 TotalPrice = 199.95,
-                BillingAddress = "John Doe, Bill Street 12, 6700 Esbjerg",
-                ShippingAddress = "Jane Doe, Ship Street 33, 6700 Esbjerg",
+                BillingAddress = "John Doe, Billing Street 12, 6700 Esbjerg",
+                ShippingAddress = "Jane Doe, Shipping Street 33, 6700 Esbjerg",
                 OrderStatusId = 1,
                 OrderStatus = new OrderStatus {Id = 1, Name = "Pending"}
             };
@@ -205,9 +203,21 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             _orderService.Delete(order.Id);
             _validatorMock.Verify(validator => validator.IdValidation(order.Id), Times.Once);
         }
+        
+        [Fact]
+        public void Delete_ShouldCallOrderValidatorIsDeletedValidationWithOrderParam_Once()
+        {
+            var order = new Order
+            {
+                Id = 1,
+                IsDeleted = true
+            };
+            var returnedOrder = _orderService.Delete(order.Id);
+            _validatorMock.Verify(validator => validator.IsDeletedValidation(returnedOrder), Times.Once);
+        }
 
-        /*[Fact]
-        public void Delete_WithValidIdParam_ShouldReturn_DeletedOrderWithDeletedStatus()
+        [Fact]
+        public void Delete_WithValidIdParam_ShouldReturn_DeletedOrderWithIsDeletedAsTrue()
         {
             var order = new Order
             {
@@ -223,18 +233,13 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             var returnValue = new Order
             {
                 Id = 1,
-                Products = new List<OrderLine>(),
-                DateCreated = DateTime.Now,
-                TotalPrice = 199.95,
-                BillingAddress = "John Doe, Bill Street 12, 6700 Esbjerg",
-                ShippingAddress = "Jane Doe, Ship Street 33, 6700 Esbjerg",
-                OrderStatusId = 5,
-                OrderStatus = new OrderStatus {Id = 5, Name = "Deleted"}
+                IsDeleted = true
             };
-            _repositoryMock.Setup(repository => repository.Delete(order)).Returns(returnValue);
-            var actual = _orderService.Delete(order);
+            _repositoryMock.Setup(repository => repository.Delete(order.Id)).Returns(returnValue);
+            var actual = _orderService.Delete(order.Id);
             var expected = returnValue;
-            actual.Should().Be(expected);
-        }*/
+            actual.Id.Should().Be(expected.Id);
+            actual.IsDeleted.Should().Be(expected.IsDeleted);
+        }
     }
 }

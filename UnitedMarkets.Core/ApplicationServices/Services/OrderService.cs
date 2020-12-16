@@ -45,8 +45,7 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
         {
             _orderValidator.IdValidation(id);
             var returnedOrder = _orderRepository.Delete(id);
-            //_orderValidator.DefaultValidation(returnedOrder);
-            //_orderValidator.StatusValidation(returnedOrder, "Deleted");
+            _orderValidator.IsDeletedValidation(returnedOrder);
             return returnedOrder;
         }
     }

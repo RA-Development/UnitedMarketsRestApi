@@ -57,22 +57,13 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
 
         public Order Delete(int id)
         {
-            /*
-            // Context tracks the given entity while in Unchanged state (no database commands yet) 
-            var order = new Order {Id = id};
-            _ctx.Attach(order);
-            // Inform the context of the changed property
-            _ctx.Entry(order).Property("isDeleted").IsModified = true;
-            _ctx.SaveChanges();
-            return order;*/
-
             try
             {
                 var entry = _ctx.Orders.Remove(new Order {Id = id});
                 _ctx.SaveChanges();
                 return entry.Entity;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new DataException("The status could not be changed to \"Deleted\".");
             }

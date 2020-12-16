@@ -48,6 +48,7 @@ namespace UnitedMarkets.UI.RestApi.Controllers
         }
 
         // DELETE 'https://localhost:5001/api/orders/1'
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

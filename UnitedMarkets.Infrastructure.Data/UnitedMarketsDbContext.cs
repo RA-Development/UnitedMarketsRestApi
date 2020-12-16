@@ -57,8 +57,7 @@ namespace UnitedMarkets.Infrastructure.Data
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.OrderStatus)
-                .WithMany(os => os.Orders)
-                .HasForeignKey(order => new {order.OrderStatusId});
+                .WithMany(os => os.Orders);
 
             //modelBuilder.Entity<Order>().Property<bool>("IsDeleted");
             modelBuilder.Entity<Order>().HasQueryFilter(order => EF.Property<bool>(order, "IsDeleted") == false);
@@ -71,7 +70,7 @@ namespace UnitedMarkets.Infrastructure.Data
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             UpdateSoftDeleteStatuses();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
@@ -84,7 +83,6 @@ namespace UnitedMarkets.Infrastructure.Data
             var markedAsDeleted = ChangeTracker.Entries().Where(x => x.State == EntityState.Deleted);
 
             foreach (var item in markedAsDeleted)
-            {
                 if (item.Entity is ISoftDelete entity)
                 {
                     // Set the entity to unchanged (Modified will update every field)
@@ -92,7 +90,6 @@ namespace UnitedMarkets.Infrastructure.Data
                     // Only update the IsDeleted flag
                     entity.IsDeleted = true;
                 }
-            }
         }
     }
 }
