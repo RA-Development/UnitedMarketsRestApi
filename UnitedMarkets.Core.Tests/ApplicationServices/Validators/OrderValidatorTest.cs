@@ -16,6 +16,10 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
             _orderValidator = new OrderValidator();
         }
 
+        [Fact]
+        public void OrderlineValidator_ShouldBeOfTypeIOrderlineValidator()
+        {
+        }
 
         [Fact]
         public void DefaultValidation_OrderInParamsAsNull_ShouldThrowException()
@@ -83,6 +87,27 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         }
 
         [Fact]
+        public void CreateValidation_OrderWithInvalidDateUpdated_ShouldThrowException()
+        {
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+
+            var order = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                ShippingAddress = "Esbjerg 8",
+                BillingAddress = "Esbjerg 8",
+                TotalPrice = 74.30,
+                OrderStatusId = 1,
+                DateCreated = DateTime.Now,
+                DateUpdated = DateTime.Now.AddSeconds(55)
+            };
+            Action action = () => _orderValidator.CreateValidation(order);
+            action.Should().Throw<ArgumentException>().WithMessage(
+                "Incorrect dateUpdated for order. Set current date with 5 seconds precision.");
+        }
+
+        [Fact]
         public void DefaultValidation_OrderWithEmptyAddress_ShouldThrowException()
         {
             var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
@@ -103,22 +128,23 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         }
 
         [Fact]
-        public void DefaultValidation_OrderWithoutPendingStatus_ShouldThrowException()
+        public void CreateValidation_OrderWithoutPendingStatus_ShouldThrowException()
         {
             var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
             var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-
             var order = new Order()
             {
+                //05/29/2015 05:50:06
                 Products = new List<OrderLine>() {orderLine1, orderLine2},
                 ShippingAddress = "Esbjerg 8",
                 BillingAddress = "Esbjerg 8",
                 TotalPrice = 74.30,
-                DateCreated = DateTime.Now
+                DateCreated = DateTime.Now,
+                DateUpdated = DateTime.Now
             };
-            Action action = () => _orderValidator.DefaultValidation(order);
+            Action action = () => _orderValidator.CreateValidation(order);
             action.Should().Throw<ArgumentException>()
-                .WithMessage("Order status has to be 'pending' on creation. (Pending status id = 4)");
+                .WithMessage("Order status has to be 'pending' on creation. (Pending status id = 1)");
         }
 
         [Theory]
@@ -149,7 +175,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         }
 
         [Fact]
-        public void DefaultValidation_OrderWithPastDateCreated_ShouldThrowException()
+        public void CreateValidation_OrderWithPastDateCreated_ShouldThrowException()
         {
             var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
             var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
@@ -164,15 +190,14 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
                 DateCreated = DateTime.Now.AddSeconds(-7)
             };
 
-            Action action = () => _orderValidator.DefaultValidation(order);
+            Action action = () => _orderValidator.CreateValidation(order);
 
             action.Should().Throw<ArgumentException>()
-                .WithMessage("Order creation date is set to past value. " +
-                             "Please input current date with 5 second precision.");
+                .WithMessage("Incorrect dateCreated for order. Set current date with 5 seconds precision.");
         }
 
         [Fact]
-        public void DefaultValidation_OrderWithFutureDateCreated_ShouldThrowException()
+        public void CreateValidation_OrderWithFutureDateCreated_ShouldThrowException()
         {
             var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
             var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
@@ -187,11 +212,154 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
                 DateCreated = DateTime.Now.AddSeconds(7)
             };
 
-            Action action = () => _orderValidator.DefaultValidation(order);
+            Action action = () => _orderValidator.CreateValidation(order);
 
             action.Should().Throw<ArgumentException>()
-                .WithMessage("Order creation date is set to future value. " +
+                .WithMessage("Incorrect dateCreated for order. Set current date with 5 seconds precision.");
+        }
+
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-7)]
+        public void UpdateValidation_OrderWithoutValidStatus_ShouldThrowException(int statusId)
+        {
+            //    Arange
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+
+            var order = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                BillingAddress = "Esbjerg 7",
+                ShippingAddress = "Esbjerg 8",
+                TotalPrice = 58,
+                OrderStatusId = statusId,
+                DateCreated = DateTime.Now.AddDays(-7),
+                DateUpdated = DateTime.Now
+            };
+            //    Act
+            Action action = () => _orderValidator.UpdateValidation(order);
+            //    Assert
+            action.Should().Throw<ArgumentException>()
+                .WithMessage(statusId == 0
+                    ? ("Order status id cannot be 0.")
+                    : ("Order status id cannot be negative value."));
+        }
+
+        [Fact]
+        public void UpdateValidation_OrderWithoutStatus_ShouldThrowException()
+        {
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+
+            var order = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                BillingAddress = "Esbjerg 7",
+                ShippingAddress = "Esbjerg 8",
+                TotalPrice = 7.80,
+                OrderStatusId = 0,
+                DateCreated = DateTime.Now.AddDays(-42)
+                //    without date updated
+            };
+
+            Action action = () => _orderValidator.UpdateValidation(order);
+
+            action.Should().Throw<ArgumentException>()
+                .WithMessage("Order has to contain current date for dateUpdated. " +
                              "Please input current date with 5 second precision.");
+        }
+
+
+        [Fact]
+        public void DefaultValidation_OrderWithOrderlinesWithIncorrectId_ShouldThrowException()
+        {
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+
+            var order = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                BillingAddress = "Esbjerg 7",
+                ShippingAddress = "Esbjerg 8",
+                TotalPrice = 7.80,
+                OrderStatusId = 0,
+                DateCreated = DateTime.Now.AddDays(-42)
+                //    without date updated
+            };
+
+            Action action = () => _orderValidator.UpdateValidation(order);
+
+            action.Should().Throw<ArgumentException>()
+                .WithMessage("Order has to contain current date for dateUpdated. " +
+                             "Please input current date with 5 second precision.");
+        }
+
+
+        [Fact]
+        public void DefaultValidation_OrderWithMatchingProductIdsInProducsts_ShouldThrowException()
+        {
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 22, SubTotalPrice = 11};
+
+            var order = new Order()
+            {
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                BillingAddress = "Esbjerg 7",
+                ShippingAddress = "Esbjerg 8",
+                TotalPrice = 7.80,
+                OrderStatusId = 0,
+                DateCreated = DateTime.Now.AddDays(-42),
+                DateUpdated = DateTime.Now
+            };
+            Action action = () => _orderValidator.DefaultValidation(order);
+            action.Should().Throw<ArgumentException>()
+                .WithMessage("Product Id in each order line has to be unique.");
+        }
+
+        [Fact]
+        public void UpdateValidation_OrderWithOrderLinesWithIncorrectReferenceToOrderId_ShouldThrowException()
+        {
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70, OrderId = 4};
+            var orderLine2 = new OrderLine() {ProductId = 2, Quantity = 22, SubTotalPrice = 11, OrderId = 2};
+
+            var order = new Order()
+            {
+                Id = 2,
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                BillingAddress = "Esbjerg 7",
+                ShippingAddress = "Esbjerg 8",
+                TotalPrice = 7.80,
+                OrderStatusId = 2,
+                DateCreated = DateTime.Now.AddDays(-42),
+                DateUpdated = DateTime.Now
+            };
+            Action action = () => _orderValidator.UpdateValidation(order);
+            action.Should().Throw<ArgumentException>()
+                .WithMessage("OrderId of each order line has to match with order id.");
+        }
+
+        [Fact]
+        public void CreateValidation_OrderWithoutDateCreatedSet_ShouldThrowException()
+        {
+            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70, OrderId = 2};
+            var orderLine2 = new OrderLine() {ProductId = 2, Quantity = 22, SubTotalPrice = 11, OrderId = 2};
+
+            var order = new Order()
+            {
+                Id = 2,
+                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                BillingAddress = "Esbjerg 7",
+                ShippingAddress = "Esbjerg 8",
+                TotalPrice = 7.80,
+                OrderStatusId = 1,
+                DateCreated = DateTime.MinValue,
+                DateUpdated = DateTime.Now
+            };
+            Action action = () => _orderValidator.CreateValidation(order);
+            action.Should().Throw<ArgumentException>()
+                .WithMessage("Incorrect dateCreated for order. Set current date with 5 seconds precision.");
         }
     }
 }

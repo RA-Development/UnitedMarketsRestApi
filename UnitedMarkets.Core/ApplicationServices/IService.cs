@@ -11,5 +11,6 @@ namespace UnitedMarkets.Core.ApplicationServices
         T Create(T entity);
         List<T> GetAll();
         FilteredList<T> GetAll(Filter filter);
+        T Update(T entity);
     }
 }

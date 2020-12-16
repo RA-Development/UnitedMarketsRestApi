@@ -132,11 +132,6 @@ namespace UnitedMarkets.Infrastructure.Data
             //    init order lines
             InitOrderLines();
 
-            _ctx.OrderStatuses.Add(new OrderStatus() {Name = "Pending"});
-            _ctx.OrderStatuses.Add(new OrderStatus() {Name = "Cancelled"});
-            _ctx.OrderStatuses.Add(new OrderStatus() {Name = "Confirmed"});
-            _ctx.OrderStatuses.Add(new OrderStatus() {Name = "Shipped"});
-            _ctx.SaveChanges();
 
             
         }

@@ -11,6 +11,16 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
             ValidatePassword(loginInputModel.Password);
         }
 
+        public void UpdateValidation(LoginInputModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateValidation(LoginInputModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ValidateUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username))

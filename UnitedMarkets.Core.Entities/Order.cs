@@ -10,6 +10,8 @@ namespace UnitedMarkets.Core.Entities
 
         public DateTime DateCreated { get; set; }
 
+        public DateTime DateUpdated { get; set; }
+
         public double TotalPrice { get; set; }
 
         public string BillingAddress { get; set; }
