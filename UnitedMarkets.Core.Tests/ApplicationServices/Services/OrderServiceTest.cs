@@ -5,7 +5,6 @@ using FluentAssertions.Extensions;
 using Moq;
 using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Services;
-using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 using Xunit;
@@ -14,36 +13,36 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
 {
     public class OrderServiceTest
     {
+        private readonly IService<Order> _orderService;
         private readonly Mock<IRepository<Order>> _repositoryMock;
-        private readonly IValidator<Order> _orderValidator;
-        private IService<Order> _orderService;
+        private readonly Mock<IValidatorExtended<Order>> _validatorMock;
 
         public OrderServiceTest()
         {
             _repositoryMock = new Mock<IRepository<Order>>();
-            _orderValidator = new OrderValidator();
-            _orderService = new OrderService(_repositoryMock.Object, _orderValidator);
+            _validatorMock = new Mock<IValidatorExtended<Order>>();
+            _orderService = new OrderService(_repositoryMock.Object, _validatorMock.Object);
         }
 
         [Fact]
         public void OrderService_ShouldBeOfTypeIServiceOrder()
         {
-            new OrderService(_repositoryMock.Object, _orderValidator).Should().BeAssignableTo<IService<Order>>();
+            new OrderService(_repositoryMock.Object, _validatorMock.Object).Should().BeAssignableTo<IService<Order>>();
         }
 
         [Fact]
         public void NewOrderService_WithNullRepository_ShouldThrowException()
         {
             Action action = () =>
-                new OrderService(null, _orderValidator);
+                new OrderService(null, _validatorMock.Object);
             action.Should().Throw<ArgumentNullException>()
                 .WithMessage("Repository cannot be null. (Parameter 'orderRepository')");
         }
 
         [Fact]
-        public void NewService_WithNullValidator_ShouldThrowException()
+        public void NewOrderService_WithNullValidator_ShouldThrowException()
         {
-            Action action = () => new OrderService(_repositoryMock.Object, null as OrderValidator);
+            Action action = () => new OrderService(_repositoryMock.Object, null);
             action.Should().Throw<ArgumentNullException>()
                 .WithMessage("Validator Cannot be Null. (Parameter 'orderValidator')");
         }
@@ -57,7 +56,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         }
 
         [Fact]
-        public void GetAll_ReturningNullFromRepository_ShouldThrowException()
+        public void GetAll_NullReturnFromRepository_ShouldThrowException()
         {
             //Arrange
             _repositoryMock.Setup(repo => repo.ReadAll()).Returns(() => null);
@@ -70,7 +69,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
         }
 
         [Fact]
-        public void GetAll_ShouldReturn_ExpectedListOfOrders()
+        public void GetAll_ShouldReturn_ExpectedOrders()
         {
             //Arrange
             var returnValue = new List<Order>
@@ -96,97 +95,71 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
 
             _repositoryMock.Setup(repo => repo.ReadAll()).Returns(() => returnValue);
 
+            var expected = returnValue;
 
             //Act
             var actual = _orderService.GetAll();
 
             //Assert
-            var expected = new List<Order>
-            {
-                new Order
-                {
-                    Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-12),
-                    TotalPrice = 100.45,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
-                },
-                new Order
-                {
-                    Id = 3, Products = new List<OrderLine>(), DateCreated = DateTime.Today, TotalPrice = 1255.95,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
-                },
-                new Order
-                {
-                    Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-1),
-                    TotalPrice = 222.95,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
-                }
-            };
-
             actual.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public void CreateOrder_WithOrderInParams_ShouldCallRepoOnce()
+        public void Create_ShouldCallOrderRepositoryCreateWithOrderParam_Once()
         {
-            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine1 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
 
-            var order = new Order()
+            var order = new Order
             {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                Products = new List<OrderLine> {orderLine1, orderLine2},
                 BillingAddress = "Esbjerg 7",
                 ShippingAddress = "Esbjerg 8",
                 TotalPrice = 15.85,
-                OrderStatusId = 4,
+                OrderStatusId = 1
             };
             _orderService.Create(order);
 
             _repositoryMock.Verify(repo => repo.Create(order), Times.Once);
         }
 
+        //TODO: Create_ShouldCallOrderValidatorDefaultValidationWithOrderParam_Once()
 
         [Fact]
-        public void CreateOrder_OrderWithValidParams_ShouldReturnOrder()
+        public void Create_WithValidOrderParam_ShouldReturn_Order()
         {
             //    Arrange
-            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine1 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
 
-            var order = new Order()
+            var order = new Order
             {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                Products = new List<OrderLine> {orderLine1, orderLine2},
                 ShippingAddress = "Esbjerg 8",
                 BillingAddress = "Esbjerg 8",
                 TotalPrice = 74.30,
-                OrderStatusId = 4,
+                OrderStatusId = 1
             };
 
-            var createdOrder = new Order()
+            var createdOrder = new Order
             {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
+                Products = new List<OrderLine> {orderLine1, orderLine2},
                 ShippingAddress = "Esbjerg 8",
                 BillingAddress = "Esbjerg 8",
                 TotalPrice = 74.30,
-                OrderStatusId = 4,
+                OrderStatusId = 1,
                 DateCreated = DateTime.Now
             };
 
             _repositoryMock.Setup(m => m.Create(order))
                 .Returns(() => createdOrder);
 
-            var expected = new Order()
-            {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
-                ShippingAddress = "Esbjerg 8",
-                BillingAddress = "Esbjerg 8",
-                TotalPrice = 74.30,
-                OrderStatusId = 4,
-                DateCreated = DateTime.Now
-            };
-            //Act
-            var actual = _orderService.Create(order);
-            //Assert
+            var expected = createdOrder;
 
+            //    Act
+            var actual = _orderService.Create(order);
+
+            //    Assert
             actual.Products.Should().BeEquivalentTo(expected.Products);
             actual.ShippingAddress.Should().BeEquivalentTo(expected.ShippingAddress);
             actual.BillingAddress.Should().BeEquivalentTo(expected.BillingAddress);
@@ -194,5 +167,74 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             actual.TotalPrice.Should().Be(expected.TotalPrice);
             actual.DateCreated.Should().BeCloseTo(expected.DateCreated, 10.Seconds());
         }
+
+        //public void Create_ShouldCallOrderValidatorDefaultValidationWithOrderParam_Once()
+
+        [Fact]
+        public void Delete_ShouldCallOrderRepositoryDeleteWithIdParam_Once()
+        {
+            var order = new Order
+            {
+                Id = 1,
+                Products = new List<OrderLine>(),
+                DateCreated = DateTime.Now,
+                TotalPrice = 199.95,
+                BillingAddress = "John Doe, Bill Street 12, 6700 Esbjerg",
+                ShippingAddress = "Jane Doe, Ship Street 33, 6700 Esbjerg",
+                OrderStatusId = 1,
+                OrderStatus = new OrderStatus {Id = 1, Name = "Pending"}
+            };
+            _orderService.Delete(order.Id);
+            _repositoryMock.Verify(repository => repository.Delete(order.Id), Times.Once);
+        }
+
+        [Fact]
+        public void Delete_ShouldCallOrderValidatorIdValidationWithIdParam_Once()
+        {
+            var order = new Order
+            {
+                Id = 1,
+                Products = new List<OrderLine>(),
+                DateCreated = DateTime.Now,
+                TotalPrice = 199.95,
+                BillingAddress = "John Doe, Bill Street 12, 6700 Esbjerg",
+                ShippingAddress = "Jane Doe, Ship Street 33, 6700 Esbjerg",
+                OrderStatusId = 1,
+                OrderStatus = new OrderStatus {Id = 1, Name = "Pending"}
+            };
+            _orderService.Delete(order.Id);
+            _validatorMock.Verify(validator => validator.IdValidation(order.Id), Times.Once);
+        }
+
+        /*[Fact]
+        public void Delete_WithValidIdParam_ShouldReturn_DeletedOrderWithDeletedStatus()
+        {
+            var order = new Order
+            {
+                Id = 1,
+                Products = new List<OrderLine>(),
+                DateCreated = DateTime.Now,
+                TotalPrice = 199.95,
+                BillingAddress = "John Doe, Bill Street 12, 6700 Esbjerg",
+                ShippingAddress = "Jane Doe, Ship Street 33, 6700 Esbjerg",
+                OrderStatusId = 1,
+                OrderStatus = new OrderStatus {Id = 1, Name = "Pending"}
+            };
+            var returnValue = new Order
+            {
+                Id = 1,
+                Products = new List<OrderLine>(),
+                DateCreated = DateTime.Now,
+                TotalPrice = 199.95,
+                BillingAddress = "John Doe, Bill Street 12, 6700 Esbjerg",
+                ShippingAddress = "Jane Doe, Ship Street 33, 6700 Esbjerg",
+                OrderStatusId = 5,
+                OrderStatus = new OrderStatus {Id = 5, Name = "Deleted"}
+            };
+            _repositoryMock.Setup(repository => repository.Delete(order)).Returns(returnValue);
+            var actual = _orderService.Delete(order);
+            var expected = returnValue;
+            actual.Should().Be(expected);
+        }*/
     }
 }

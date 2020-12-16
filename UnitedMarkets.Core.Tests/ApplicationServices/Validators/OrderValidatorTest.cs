@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using UnitedMarkets.Core.ApplicationServices;
 using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.Entities;
 using Xunit;
@@ -9,189 +10,151 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
 {
     public class OrderValidatorTest
     {
-        private readonly OrderValidator _orderValidator;
+        public static TheoryData<DateTime> DateCreatedTestMemberData = new TheoryData<DateTime>
+        {
+            DateTime.Now.AddSeconds(-7),
+            DateTime.Now.AddSeconds(7)
+        };
+
+        public static TheoryData<List<OrderLine>> ProductListTestMemberData = new TheoryData<List<OrderLine>>
+        {
+            null,
+            new List<OrderLine>()
+        };
+
+        private readonly IValidatorExtended<Order> _orderValidator;
 
         public OrderValidatorTest()
         {
             _orderValidator = new OrderValidator();
         }
 
+        [Fact]
+        public void OrderValidator_ShouldBeOfTypeIValidatorExtendedOrder()
+        {
+            new OrderValidator().Should().BeAssignableTo<IValidatorExtended<Order>>();
+        }
 
         [Fact]
-        public void DefaultValidation_OrderInParamsAsNull_ShouldThrowException()
+        public void DefaultValidation_WithOrderParamAsNull_ShouldThrowException()
         {
             Action action = () => _orderValidator.DefaultValidation(null);
             action.Should().Throw<ArgumentNullException>()
-                .WithMessage("Order Cannot be Null. (Parameter 'order')");
+                .WithMessage("Order cannot be null. (Parameter 'order')");
         }
 
-
-        [Fact]
-        public void DefaultValidation_OrderWithEmptyProductList_ShouldThrowException()
+        [Theory]
+        [MemberData(nameof(ProductListTestMemberData))]
+        public void DefaultValidation_WithNullOrEmptyProductListInOrderParam_ShouldThrowException(List<OrderLine> products)
         {
-            var order = new Order()
+            var order = new Order
             {
-                Products = new List<OrderLine>(),
-                BillingAddress = "Esbjerg 7",
-                ShippingAddress = "Esbjerg 8",
-                TotalPrice = 15.85,
-                OrderStatusId = 4,
-                DateCreated = DateTime.Now
+                Products = products
             };
             Action action = () => _orderValidator.DefaultValidation(order);
             action.Should().Throw<ArgumentException>()
-                .WithMessage("Product list must contain at least one product.");
+                .WithMessage(products == null
+                    ? "Order must contain product list. (Parameter 'Products')"
+                    : "Product list must contain at least one product.");
         }
 
-
-        [Fact]
-        public void DefaultValidation_OrderWithNullProductList_ShouldThrowException()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void DefaultValidation_WithNullOrEmptyBillingAddressInOrderParam_ShouldThrowException(string billingAddress)
         {
-            var order = new Order()
+            var orderLine1 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+
+            var order = new Order
             {
-                Products = null,
-                BillingAddress = "Esbjerg 7",
-                ShippingAddress = "Esbjerg 8",
-                TotalPrice = 15.85,
-                OrderStatusId = 4,
-                DateCreated = DateTime.Now
-            };
-            Action action = () => _orderValidator.DefaultValidation(order);
-            action.Should().Throw<ArgumentNullException>()
-                .WithMessage("Order must contain product list. (Parameter 'Products')");
-        }
-
-
-        [Fact]
-        public void DefaultValidation_OrderWithEmptyBillingAddress_ShouldThrowException()
-        {
-            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-
-            var order = new Order()
-            {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
-                ShippingAddress = "Esbjerg 8",
-                //    empty Billing Address
+                Products = new List<OrderLine> {orderLine1, orderLine2},
                 TotalPrice = 74.30,
-                OrderStatusId = 4,
-                DateCreated = DateTime.Now
+                BillingAddress = billingAddress
             };
             Action action = () => _orderValidator.DefaultValidation(order);
             action.Should().Throw<ArgumentException>()
                 .WithMessage("Order has to contain billing address.");
         }
 
-        [Fact]
-        public void DefaultValidation_OrderWithEmptyAddress_ShouldThrowException()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void DefaultValidation_WithNullOrEmptyShippingAddressInOrderParam_ShouldThrowException(string shippingAddress)
         {
-            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine1 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
 
-            var order = new Order()
+            var order = new Order
             {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
-                // ShippingAddress is empty
-                BillingAddress = "Esbjerg 8",
+                Products = new List<OrderLine> {orderLine1, orderLine2},
                 TotalPrice = 74.30,
-                OrderStatusId = 4,
-                DateCreated = DateTime.Now
+                BillingAddress = "Esbjerg 8",
+                ShippingAddress = shippingAddress
             };
             Action action = () => _orderValidator.DefaultValidation(order);
             action.Should().Throw<ArgumentException>()
                 .WithMessage("Order has to contain shipping address.");
         }
 
-        [Fact]
-        public void DefaultValidation_OrderWithoutPendingStatus_ShouldThrowException()
-        {
-            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-
-            var order = new Order()
-            {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
-                ShippingAddress = "Esbjerg 8",
-                BillingAddress = "Esbjerg 8",
-                TotalPrice = 74.30,
-                DateCreated = DateTime.Now
-            };
-            Action action = () => _orderValidator.DefaultValidation(order);
-            action.Should().Throw<ArgumentException>()
-                .WithMessage("Order status has to be 'pending' on creation. (Pending status id = 4)");
-        }
-
         [Theory]
         [InlineData(0)]
         [InlineData(-7)]
-        public void DefaultValidation_OrderWithInvalidTotalPrice_ShouldThrowException(double totalPrice)
+        public void DefaultValidation_WithZeroOrNegativeTotalPriceInOrderParam_ShouldThrowException(double totalPrice)
         {
-            //    Arange
-            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            //    Arrange
+            var orderLine1 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
+            var orderLine2 = new OrderLine {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
 
-            var order = new Order()
+            var order = new Order
             {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
-                BillingAddress = "Esbjerg 7",
-                ShippingAddress = "Esbjerg 8",
-                TotalPrice = totalPrice,
-                OrderStatusId = 4,
-                DateCreated = DateTime.Now
+                Products = new List<OrderLine> {orderLine1, orderLine2},
+                TotalPrice = totalPrice
             };
             //    Act
             Action action = () => _orderValidator.DefaultValidation(order);
             //    Assert
             action.Should().Throw<ArgumentException>()
                 .WithMessage(totalPrice == 0
-                    ? ("Order total price Cannot be 0.")
-                    : ("Order total price Cannot be negative value."));
+                    ? "Order total price cannot be 0."
+                    : "Order total price cannot be negative value.");
+        }
+
+        [Theory]
+        [MemberData(nameof(DateCreatedTestMemberData))]
+        public void DefaultValidation_WithPastOrFutureDateCreatedInOrderParam_ShouldThrowException(DateTime dateTime)
+        {
+            var order = new Order {DateCreated = dateTime};
+            Action action = () => _orderValidator.DateCreatedValidation(order);
+            action.Should().Throw<ArgumentException>()
+                .WithMessage("Order creation date is not within 5 second precision.");
         }
 
         [Fact]
-        public void DefaultValidation_OrderWithPastDateCreated_ShouldThrowException()
+        public void IdValidation_WithIdParamLessThan1_ShouldThrowException()
         {
-            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-
-            var order = new Order()
-            {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
-                BillingAddress = "Esbjerg 7",
-                ShippingAddress = "Esbjerg 8",
-                TotalPrice = 7.80,
-                OrderStatusId = 4,
-                DateCreated = DateTime.Now.AddSeconds(-7)
-            };
-
-            Action action = () => _orderValidator.DefaultValidation(order);
-
-            action.Should().Throw<ArgumentException>()
-                .WithMessage("Order creation date is set to past value. " +
-                             "Please input current date with 5 second precision.");
+            const int id = 0;
+            Action action = () => _orderValidator.IdValidation(id);
+            action.Should().Throw<ArgumentException>().WithMessage("Id cannot be less than 1.");
         }
 
-        [Fact]
-        public void DefaultValidation_OrderWithFutureDateCreated_ShouldThrowException()
+        public static TheoryData<Order,string> OrderStatusTestMemberData = new TheoryData<Order,string>
         {
-            var orderLine1 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-            var orderLine2 = new OrderLine() {ProductId = 1, Quantity = 3, SubTotalPrice = 874.70};
-
-            var order = new Order()
-            {
-                Products = new List<OrderLine>() {orderLine1, orderLine2},
-                BillingAddress = "Esbjerg 7",
-                ShippingAddress = "Esbjerg 8",
-                TotalPrice = 7.80,
-                OrderStatusId = 4,
-                DateCreated = DateTime.Now.AddSeconds(7)
-            };
-
-            Action action = () => _orderValidator.DefaultValidation(order);
-
-            action.Should().Throw<ArgumentException>()
-                .WithMessage("Order creation date is set to future value. " +
-                             "Please input current date with 5 second precision.");
+            {new Order(), "Pending"},
+            {new Order {OrderStatus = new OrderStatus {Id = 1, Name = "Pending"}},"Deleted"}
+        };
+        
+        [Theory]
+        [MemberData(nameof(OrderStatusTestMemberData))]
+        public void StatusValidation_WithNullOrUnexpectedOrderStatusInOrderParam_ShouldThrowException(Order order, string requiredStatus)
+        {
+            Action action = () => _orderValidator.StatusValidation(order, requiredStatus);
+            
+            if(order.OrderStatus == null)
+                action.Should().Throw<ArgumentNullException>()
+                    .WithMessage("Status cannot be null. (Parameter 'OrderStatus')");
+            else
+                action.Should().Throw<ArgumentException>().WithMessage("Status should be \"Deleted\".");
         }
     }
 }

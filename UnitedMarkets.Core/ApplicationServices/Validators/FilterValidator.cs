@@ -13,7 +13,7 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
         private void ValidateMarketId(int id)
         {
             if (id <= 0)
-                throw new ArgumentException("MarketId has to be number bigger then 0.");
+                throw new ArgumentException("MarketId has to be greater than 0.");
         }
     }
 }

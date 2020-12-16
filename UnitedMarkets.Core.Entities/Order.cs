@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace UnitedMarkets.Core.Entities
 {
-    public class Order
+    public class Order : ISoftDelete
     {
         public int Id { get; set; }
         public IEnumerable<OrderLine> Products { get; set; }
@@ -19,5 +19,6 @@ namespace UnitedMarkets.Core.Entities
         public int OrderStatusId { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

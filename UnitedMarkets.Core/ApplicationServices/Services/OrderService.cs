@@ -9,34 +9,45 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
 {
     public class OrderService : IService<Order>
     {
-        private readonly IRepository<Order> _orderRepo;
-        private readonly IValidator<Order> _orderValidator;
+        private readonly IRepository<Order> _orderRepository;
+        private readonly IValidatorExtended<Order> _orderValidator;
 
-        public OrderService(IRepository<Order> orderRepository, IValidator<Order> orderValidator)
+        public OrderService(IRepository<Order> orderRepository, IValidatorExtended<Order> orderValidator)
         {
-            _orderRepo = orderRepository ??
+            _orderRepository = orderRepository ??
                          throw new ArgumentNullException(nameof(orderRepository),
-                             "Repository Cannot be Null.");
+                             "Repository cannot be null.");
             _orderValidator = orderValidator ??
                               throw new ArgumentNullException(nameof(orderValidator),
-                                  "Validator Cannot be Null.");
+                                  "Validator cannot be null.");
         }
 
         public Order Create(Order order)
         {
             order.DateCreated = DateTime.Now;
             _orderValidator.DefaultValidation(order);
-            return _orderRepo.Create(order);
+            //_orderValidator.StatusValidation(order,"Pending");
+            _orderValidator.DateCreatedValidation(order);
+            return _orderRepository.Create(order);
         }
 
         public List<Order> GetAll()
         {
-            return _orderRepo.ReadAll().ToList();
+            return _orderRepository.ReadAll().ToList();
         }
 
         public FilteredList<Order> GetAll(Filter filter)
         {
             throw new NotImplementedException();
+        }
+
+        public Order Delete(int id)
+        {
+            _orderValidator.IdValidation(id);
+            var returnedOrder = _orderRepository.Delete(id);
+            //_orderValidator.DefaultValidation(returnedOrder);
+            //_orderValidator.StatusValidation(returnedOrder, "Deleted");
+            return returnedOrder;
         }
     }
 }

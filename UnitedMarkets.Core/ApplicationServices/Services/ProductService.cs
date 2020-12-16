@@ -22,16 +22,16 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
         {
             _productRepo = productRepository ??
                            throw new ArgumentNullException(nameof(productRepository),
-                               "Repository Cannot be Null.");
+                               "Repository cannot be null.");
             _filterValidator = filterValidator ??
                                throw new ArgumentNullException(nameof(filterValidator),
-                                   "Validator Cannot be Null.");
+                                   "Validator cannot be null.");
             _priceCalc = priceCalculator ??
                          throw new ArgumentNullException(nameof(priceCalculator),
-                             "Price Calculator Cannot be Null.");
+                             "Price Calculator cannot be null.");
             _productValidator = productValidator ??
                                 throw new ArgumentNullException(nameof(productValidator),
-                                    "Validator Cannot be Null.");
+                                    "Validator cannot be null.");
         }
 
         public FilteredList<Product> GetAll(Filter filter)
@@ -45,6 +45,11 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
             }
 
             return filteredList;
+        }
+
+        public Product Delete(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public Product Create(Product entity)

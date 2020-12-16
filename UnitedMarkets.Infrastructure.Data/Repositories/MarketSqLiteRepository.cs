@@ -25,7 +25,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             }).ToList();
         }
 
-        public Market ReadById(long id)
+        public Market ReadById(int id)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(long id)
+        public Market Delete(int id)
         {
             throw new NotImplementedException();
         }

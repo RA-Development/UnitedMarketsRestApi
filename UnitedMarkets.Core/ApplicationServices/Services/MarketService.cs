@@ -32,5 +32,10 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
         {
             throw new NotImplementedException();
         }
+
+        public Market Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

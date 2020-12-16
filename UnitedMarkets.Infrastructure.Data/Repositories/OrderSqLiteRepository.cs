@@ -33,7 +33,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             }).ToList();
         }
 
-        public Order ReadById(long id)
+        public Order ReadById(int id)
         {
             throw new NotImplementedException();
         }
@@ -55,9 +55,27 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(long id)
+        public Order Delete(int id)
         {
-            throw new NotImplementedException();
+            /*
+            // Context tracks the given entity while in Unchanged state (no database commands yet) 
+            var order = new Order {Id = id};
+            _ctx.Attach(order);
+            // Inform the context of the changed property
+            _ctx.Entry(order).Property("isDeleted").IsModified = true;
+            _ctx.SaveChanges();
+            return order;*/
+
+            try
+            {
+                var entry = _ctx.Orders.Remove(new Order {Id = id});
+                _ctx.SaveChanges();
+                return entry.Entity;
+            }
+            catch (Exception e)
+            {
+                throw new DataException("The status could not be changed to \"Deleted\".");
+            }
         }
 
         public FilteredList<Product> ReadAll(Filter filter)

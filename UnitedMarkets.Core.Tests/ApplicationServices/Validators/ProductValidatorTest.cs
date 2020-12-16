@@ -10,7 +10,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
     public class ProductValidatorTest
     {
         private readonly AmountUnit _kgAmount;
-        private readonly ProductValidator _productValidator;
+        private readonly IValidator<Product> _productValidator;
 
         public ProductValidatorTest()
         {
@@ -19,7 +19,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         }
 
         [Fact]
-        public void ProductValidator_ShouldBeOfTypeIProductValidator()
+        public void ProductValidator_ShouldBeOfTypeIValidatorProduct()
         {
             new ProductValidator().Should().BeAssignableTo<IValidator<Product>>();
         }
