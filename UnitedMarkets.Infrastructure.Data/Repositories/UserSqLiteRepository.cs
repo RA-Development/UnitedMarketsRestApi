@@ -47,7 +47,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public FilteredList<Product> ReadAll(Filter filter)
+        public FilteredList<User> ReadAll(Filter filter)
         {
             throw new NotImplementedException();
         }

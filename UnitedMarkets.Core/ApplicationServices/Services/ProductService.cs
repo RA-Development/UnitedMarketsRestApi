@@ -47,6 +47,11 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
             return filteredList;
         }
 
+        public Product Update(Product entity)
+        {
+            throw new NotImplementedException();
+        }
+
         public Product Create(Product entity)
         {
             throw new NotImplementedException();

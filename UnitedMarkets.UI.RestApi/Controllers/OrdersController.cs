@@ -46,5 +46,23 @@ namespace UnitedMarkets.UI.RestApi.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Order order)
+        {
+            if (id != order.Id)
+            {
+                return BadRequest("Order id must match.");
+            }
+
+            try
+            {
+                return Ok(_orderService.Update(order));
+            }
+            catch (System.Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

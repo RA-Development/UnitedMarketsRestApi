@@ -12,6 +12,8 @@ namespace UnitedMarkets.Core.DomainServices
         T Create(T entity);
         T Update(T entity);
         void Delete(long id);
-        FilteredList<Product> ReadAll(Filter filter);
+        FilteredList<T> ReadAll(Filter filter);
+        
+        
     }
 }

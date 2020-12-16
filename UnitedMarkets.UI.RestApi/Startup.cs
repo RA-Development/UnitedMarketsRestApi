@@ -47,8 +47,8 @@ namespace UnitedMarkets.UI.RestApi
                     opt
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                         .UseLoggerFactory(loggerFactory)
-                        .UseSqlite("Data Source=UnitedMarketsSqLite.db");
-                    //.EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
+                        .UseSqlite("Data Source=UnitedMarketsSqLite.db")
+                        .EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
             }
             else // TODO: Azure SQL database.
@@ -62,7 +62,7 @@ namespace UnitedMarkets.UI.RestApi
             services.AddScoped<IValidator<Product>, ProductValidator>();
             services.AddScoped<IValidator<LoginInputModel>, LoginInputModelValidator>();
             services.AddScoped<IValidator<Order>, OrderValidator>();
-
+            services.AddScoped<IValidator<OrderLine>, OrderLineValidator>();
 
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 

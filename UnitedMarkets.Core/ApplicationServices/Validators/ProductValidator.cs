@@ -11,6 +11,16 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
             ValidateAmount(product);
         }
 
+        public void UpdateValidation(Product entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateValidation(Product entity)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ValidateAmount(Product product)
         {
             if (product.Amount < 0)
