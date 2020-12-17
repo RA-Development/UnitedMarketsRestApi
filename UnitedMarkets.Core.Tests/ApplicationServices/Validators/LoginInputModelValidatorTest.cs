@@ -10,7 +10,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
     public class LoginInputModelValidatorTest
     {
         [Fact]
-        public void LoginInputModelValidator_IsOfTypeIValidatorLoginInputModel()
+        public void LoginInputModelValidator_ShouldBeOfTypeIValidatorLoginInputModel()
         {
             new LoginInputModelValidator().Should().BeAssignableTo<IValidator<LoginInputModel>>();
         }

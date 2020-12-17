@@ -10,20 +10,10 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
             ValidateMarketId(filter.MarketId);
         }
 
-        public void UpdateValidation(Filter entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CreateValidation(Filter entity)
-        {
-            throw new NotImplementedException();
-        }
-
         private void ValidateMarketId(int id)
         {
-            if (id <= 0)
-                throw new ArgumentException("MarketId has to be number bigger then 0.");
+            if (id < 1)
+                throw new ArgumentException("MarketId cannot be less than 1.", nameof(id));
         }
     }
 }

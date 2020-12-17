@@ -22,7 +22,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             return _ctx.Users.ToList();
         }
 
-        public User ReadById(long id)
+        public User ReadById(int id)
         {
             throw new NotImplementedException();
         }
@@ -42,7 +42,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(long id)
+        public User Delete(int id)
         {
             throw new NotImplementedException();
         }

@@ -12,7 +12,6 @@ namespace UnitedMarkets.Infrastructure.Data
         private readonly IAuthenticationHelper _authenticationHelper;
         private readonly UnitedMarketsDbContext _ctx;
         private readonly IRepository<Market> _marketRepository;
-        private int _userId;
 
         public DbInitializer(
             UnitedMarketsDbContext ctx,
@@ -115,32 +114,27 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Products.Add(product5);
             _ctx.Products.Add(product6);
 
-            //    init order status
-            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Pending"});
-            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Cancelled"});
-            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Confirmed"});
-            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Shipped"});
-
-            _ctx.SaveChanges();
-
             //    init users
             InitUsers();
-
+            
+            //    init order status
+            InitOrderStatuses();
+            
             //    init orders
             InitOrders();
 
             //    init order lines
             InitOrderLines();
-
-
-            
         }
-
+        
         private void InitMarkets()
         {
             _marketRepository.Create(new Market {Name = "Fakta"});
-            _marketRepository.Create(new Market {Name = "Irma"});
             _marketRepository.Create(new Market {Name = "Netto"});
+            _marketRepository.Create(new Market {Name = "Irma"});
+            _marketRepository.Create(new Market {Name = "Føtex"});
+            _marketRepository.Create(new Market {Name = "Kvickly"});
+            _marketRepository.Create(new Market {Name = "Bilka"});
             _ctx.SaveChanges();
         }
 
@@ -154,7 +148,6 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 new User
                 {
-                    Id = _userId++,
                     Username = "UserJohnDoe",
                     PasswordHash = passwordHashJohn,
                     PasswordSalt = passwordSaltJohn,
@@ -162,7 +155,6 @@ namespace UnitedMarkets.Infrastructure.Data
                 },
                 new User
                 {
-                    Id = _userId++,
                     Username = "AdminJaneDoe",
                     PasswordHash = passwordHashJane,
                     PasswordSalt = passwordSaltJane,
@@ -174,6 +166,16 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.SaveChanges();
         }
 
+        private void InitOrderStatuses()
+        {
+            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Cancelled"});
+            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Shipped"});
+            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Confirmed"});
+            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Pending"});
+            
+            _ctx.SaveChanges();
+        }
+        
         private void InitOrders()
         {
             var orders = new List<Order>
@@ -182,13 +184,13 @@ namespace UnitedMarkets.Infrastructure.Data
                 {
                     Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.Now.AddDays(-12),
                     TotalPrice = 42,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 2
                 },
                 new Order
                 {
                     Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.Now.AddDays(-2),
                     TotalPrice = 222.95,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 3
                 },
                 new Order
                 {

@@ -11,26 +11,16 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
             ValidateAmount(product);
         }
 
-        public void UpdateValidation(Product entity)
+        private void ValidateUnitPrice(Product product)
         {
-            throw new NotImplementedException();
-        }
-
-        public void CreateValidation(Product entity)
-        {
-            throw new NotImplementedException();
+            if (product.PricePerUnit < 0)
+                throw new ArgumentException("Positive value required for product price.", nameof(product));
         }
 
         private void ValidateAmount(Product product)
         {
             if (product.Amount < 0)
-                throw new ArgumentException("Positive value required for product amount.");
-        }
-
-        private void ValidateUnitPrice(Product product)
-        {
-            if (product.PricePerUnit < 0)
-                throw new ArgumentException("Positive value required for product price.");
+                throw new ArgumentException("Positive value required for product amount.", nameof(product));
         }
     }
 }

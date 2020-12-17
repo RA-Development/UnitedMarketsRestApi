@@ -5,118 +5,140 @@ using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Core.ApplicationServices.Validators
 {
-    public class OrderValidator : IValidator<Order>
+    public class OrderValidator : IValidatorExtended<Order>
     {
         public void DefaultValidation(Order order)
         {
             if (order == null)
                 throw new ArgumentNullException(nameof(order),
-                    "Order Cannot be Null.");
+                    "Order cannot be null.");
+            ValidateStatus(order);
             ValidateProductList(order);
             ValidatePrice(order);
             ValidateBillingAddress(order);
             ValidateShippingAddress(order);
-            ValidateProductIdDuplicates(order.Products);
+            ValidateProductId(order.Products);
+            // TODO: Validate SubTotals add up to TotalPrice
         }
 
-        private void ValidateProductIdDuplicates(IEnumerable<OrderLine> orderProducts)
+        public void IdValidation(int id)
         {
-            var duplicates = orderProducts.Select(ol => ol.ProductId)
-                .GroupBy(n => n).Any(c => c.Count() > 1);
-            if (duplicates)
-                throw new ArgumentException("Product Id in each order line has to be unique.");
-        }
-
-
-        public void UpdateValidation(Order order)
-        {
-            ValidateDateUpdated(order.DateUpdated);
-            ValidateStatus(order); // move to default val
-            ValidateOrderIdOfOrderlines(order);
-        }
-
-        private void ValidateOrderIdOfOrderlines(Order order)
-        {
-            if (order.Products.Any(ol => ol.OrderId != order.Id))
-                throw new ArgumentException("OrderId of each order line has to match with order id.");
-        }
-
-        private void ValidateStatus(Order order)
-        {
-            if (order.OrderStatusId == 0)
-                throw new ArgumentException("Order status id cannot be 0.");
-
-            if (order.OrderStatusId < 0)
-                throw new ArgumentException("Order status id cannot be negative value.");
+            if (id < 1) throw new ArgumentException("Id cannot be less than 1.", nameof(id));
         }
 
         public void CreateValidation(Order order)
         {
-            ValidateDates(order.DateCreated, order.DateUpdated);
+            ValidateDatesCreationValidation(order.DateCreated, order.DateUpdated);
             ValidatePendingStatus(order);
         }
 
-        private void ValidateDateUpdated(DateTime dateUpdated)
+        public void UpdateValidation(Order order)
         {
-            var startDate = DateTime.Now.AddSeconds(-5);
-            var endDate = DateTime.Now.AddSeconds(5);
-            if (dateUpdated < startDate || dateUpdated > endDate)
-            {
-                throw new ArgumentException("Order has to contain current date for dateUpdated. " +
-                                            "Please input current date with 5 second precision.");
-            }
+            ValidateDatesUpdateValidation(order);
+            ValidateOrderIdOfOrderLines(order);
+        }
+        
+        public void DeleteValidation(Order order)
+        {
+            if (!order.IsDeleted)
+                throw new ArgumentException("Order has to be flagged as deleted.", nameof(order.IsDeleted));
         }
 
-        private void ValidateDates(DateTime dateCreated, DateTime dateUpdated)
+        private void ValidateStatus(Order order)
         {
-            var startDate = DateTime.Now.AddSeconds(-5);
-            var endDate = DateTime.Now.AddSeconds(5);
-
-            if (dateCreated < startDate || dateCreated > endDate)
-                throw new ArgumentException(
-                    "Incorrect dateCreated for order. Set current date with 5 seconds precision.");
-            if (dateUpdated < startDate || dateUpdated > endDate)
-                throw new ArgumentException(
-                    "Incorrect dateUpdated for order. Set current date with 5 seconds precision.");
+            if (order.OrderStatusId < 1)
+                throw new ArgumentException("OrderStatusId cannot be less than 1.", nameof(order.OrderStatus));
         }
-
-
-        private void ValidatePendingStatus(Order order)
+        
+        private void ValidateProductList(Order order)
         {
-            if (order.OrderStatusId != 1)
-                throw new ArgumentException(
-                    "Order status has to be 'pending' on creation. (Pending status id = 1)");
-        }
+            if (order.Products == null)
+                throw new ArgumentNullException(nameof(order.Products),
+                    "Order must contain a list of products.");
 
-        private void ValidateShippingAddress(Order order)
-        {
-            if (string.IsNullOrEmpty(order.ShippingAddress))
-                throw new ArgumentException("Order has to contain shipping address.");
-        }
-
-        private void ValidateBillingAddress(Order order)
-        {
-            if (string.IsNullOrEmpty(order.BillingAddress))
-                throw new ArgumentException("Order has to contain billing address.");
+            if (!order.Products.Any())
+                throw new ArgumentException("List of products must contain at least one product.",
+                    nameof(order.Products));
         }
 
         private void ValidatePrice(Order order)
         {
             if (order.TotalPrice == 0)
-                throw new ArgumentException("Order total price Cannot be 0.");
+                throw new ArgumentException("Order cannot have a total price of 0.", nameof(order.TotalPrice));
 
             if (order.TotalPrice < 0)
-                throw new ArgumentException("Order total price Cannot be negative value.");
+                throw new ArgumentException("Order cannot have a total price of negative value.",
+                    nameof(order.TotalPrice));
         }
 
-        private void ValidateProductList(Order order)
+        private void ValidateBillingAddress(Order order)
         {
-            if (order.Products == null)
-                throw new ArgumentNullException(nameof(order.Products),
-                    "Order must contain product list.");
+            if (string.IsNullOrEmpty(order.BillingAddress))
+                throw new ArgumentException("Order has to contain a billing address.", nameof(order.BillingAddress));
+        }
 
-            if (!order.Products.Any())
-                throw new ArgumentException("Product list must contain at least one product.");
+        private void ValidateShippingAddress(Order order)
+        {
+            if (string.IsNullOrEmpty(order.ShippingAddress))
+                throw new ArgumentException("Order has to contain a shipping address.", nameof(order.ShippingAddress));
+        }
+
+        private void ValidateProductId(IEnumerable<OrderLine> orderProducts)
+        {
+            var duplicates = orderProducts.Select(ol => ol.ProductId)
+                .GroupBy(n => n).Any(c => c.Count() > 1);
+            if (duplicates)
+                throw new ArgumentException("ProductId in each order line has to be unique.", nameof(orderProducts));
+        }
+
+        private void ValidateDatesCreationValidation(DateTime dateCreated, DateTime dateUpdated)
+        {
+            var lowerBoundary = DateTime.Now.AddSeconds(-5);
+            var upperBoundary = DateTime.Now.AddSeconds(5);
+
+            if (dateCreated < lowerBoundary || dateCreated > upperBoundary)
+                throw new ArgumentException(
+                    "DateCreated for Order has to be within 5 seconds' precision.", nameof(dateCreated));
+            if (dateUpdated < lowerBoundary || dateUpdated > upperBoundary)
+                throw new ArgumentException(
+                    "DateUpdated for Order has to be within 5 seconds' precision.", nameof(dateUpdated));
+        }
+
+        private void
+            ValidatePendingStatus(Order order) // TODO: Status validation is vulnerable. Check for name instead?
+        {
+            if (order.OrderStatusId != 1)
+                throw new ArgumentException(
+                    "Order status has to be 'pending', with id = 1,  on creation.",
+                    nameof(order.OrderStatusId));
+        }
+
+        private void ValidateDatesUpdateValidation(Order order)
+        {
+            ValidateDateCreated(order.DateCreated);
+            ValidateDateUpdated(order.DateUpdated);
+        }
+        
+        private void ValidateDateCreated(in DateTime dateCreated)
+        {
+            if (dateCreated.Equals(DateTime.MinValue))
+                throw new ArgumentNullException(nameof(dateCreated), "Order must have a DateCreated.");
+        }
+
+        private void ValidateDateUpdated(DateTime dateUpdated)
+        {
+            var lowerBoundary = DateTime.Now.AddSeconds(-5);
+            var upperBoundary = DateTime.Now.AddSeconds(5);
+            if (dateUpdated < lowerBoundary || dateUpdated > upperBoundary)
+                throw new ArgumentException(
+                    "Order has to contain the current date within 5 seconds' precision for DateUpdated.",
+                    nameof(dateUpdated));
+        }
+        
+        private void ValidateOrderIdOfOrderLines(Order order)
+        {
+            if (order.Products.Any(orderLine => orderLine.OrderId != order.Id))
+                throw new ArgumentException("OrderId of each OrderLine has to match with Id of Order.", nameof(order));
         }
     }
 }

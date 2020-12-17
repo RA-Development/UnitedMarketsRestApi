@@ -41,7 +41,22 @@ namespace UnitedMarkets.UI.RestApi.Controllers
             {
                 return Ok(_orderService.Create(order));
             }
-            catch (System.Exception e)
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        // DELETE 'https://localhost:5001/api/orders/1'
+        [Authorize(Roles = "Administrator")]
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                return Ok(_orderService.Delete(id));
+            }
+            catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }

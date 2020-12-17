@@ -9,10 +9,10 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
 {
     public class ProductService : IService<Product>
     {
-        private IRepository<Product> _productRepo;
-        private IValidator<Filter> _filterValidator;
-        private IPriceCalculator _priceCalc;
-        private IValidator<Product> _productValidator;
+        private readonly IValidator<Filter> _filterValidator;
+        private readonly IPriceCalculator _priceCalc;
+        private readonly IRepository<Product> _productRepo;
+        private readonly IValidator<Product> _productValidator;
 
         public ProductService(
             IRepository<Product> productRepository,
@@ -22,16 +22,21 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
         {
             _productRepo = productRepository ??
                            throw new ArgumentNullException(nameof(productRepository),
-                               "Repository Cannot be Null.");
+                               "Repository cannot be null.");
             _filterValidator = filterValidator ??
                                throw new ArgumentNullException(nameof(filterValidator),
-                                   "Validator Cannot be Null.");
+                                   "Validator cannot be null.");
             _priceCalc = priceCalculator ??
                          throw new ArgumentNullException(nameof(priceCalculator),
-                             "Price Calculator Cannot be Null.");
+                             "Price Calculator cannot be null.");
             _productValidator = productValidator ??
                                 throw new ArgumentNullException(nameof(productValidator),
-                                    "Validator Cannot be Null.");
+                                    "Validator cannot be null.");
+        }
+
+        public Product Create(Product entity)
+        {
+            throw new NotImplementedException();
         }
 
         public FilteredList<Product> GetAll(Filter filter)
@@ -47,17 +52,17 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
             return filteredList;
         }
 
+        public List<Product> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public Product Update(Product entity)
         {
             throw new NotImplementedException();
         }
 
-        public Product Create(Product entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Product> GetAll()
+        public Product Delete(int id)
         {
             throw new NotImplementedException();
         }

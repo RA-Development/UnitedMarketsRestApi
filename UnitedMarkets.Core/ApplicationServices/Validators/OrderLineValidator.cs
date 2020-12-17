@@ -3,52 +3,23 @@ using UnitedMarkets.Core.Entities;
 
 namespace UnitedMarkets.Core.ApplicationServices.Validators
 {
-    public class OrderLineValidator : IValidator<OrderLine>
+    public class OrderLineValidator : IValidatorExtended<OrderLine>
     {
         public void DefaultValidation(OrderLine orderLine)
         {
-            
             ValidateProductId(orderLine);
             ValidateQuantity(orderLine);
             ValidateSubTotal(orderLine);
         }
 
-        
-
-        private void ValidateOrderId(OrderLine orderLine)
+        public void IdValidation(int id)
         {
-            if (orderLine.OrderId == 0)
-                throw new ArgumentException("Order line order id cannot be 0.");
-
-            if (orderLine.OrderId < 0)
-                throw new ArgumentException("Order line order id cannot be negative value.");
+            throw new NotImplementedException();
         }
 
-        private void ValidateSubTotal(OrderLine orderLine)
+        public void CreateValidation(OrderLine orderLine)
         {
-            if (orderLine.SubTotalPrice == 0)
-                throw new ArgumentException("Order line sub total price cannot be 0.");
-
-            if (orderLine.SubTotalPrice < 0)
-                throw new ArgumentException("Order line sub total price cannot be negative value.");
-        }
-
-        private void ValidateQuantity(OrderLine orderLine)
-        {
-            if (orderLine.Quantity == 0)
-                throw new ArgumentException("Order line quantity cannot be 0.");
-
-            if (orderLine.Quantity < 0)
-                throw new ArgumentException("Order line quantity cannot be negative value.");
-        }
-
-        private void ValidateProductId(OrderLine orderLine)
-        {
-            if (orderLine.ProductId == 0)
-                throw new ArgumentException("Product id cannot be 0.");
-
-            if (orderLine.ProductId < 0)
-                throw new ArgumentException("Product id cannot be negative value.");
+            throw new NotImplementedException();
         }
 
         public void UpdateValidation(OrderLine orderLine)
@@ -56,9 +27,48 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
             ValidateOrderId(orderLine);
         }
 
-        public void CreateValidation(OrderLine orderLine)
+        public void DeleteValidation(OrderLine entity)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+        }
+        
+        private void ValidateProductId(OrderLine orderLine)
+        {
+            if (orderLine.ProductId == 0)
+                throw new ArgumentException("ProductId cannot be 0 in OrderLine.", nameof(orderLine.ProductId));
+
+            if (orderLine.ProductId < 0)
+                throw new ArgumentException("ProductId cannot be a negative value in OrderLine.",
+                    nameof(orderLine.ProductId));
+        }
+
+        private void ValidateQuantity(OrderLine orderLine)
+        {
+            if (orderLine.Quantity == 0)
+                throw new ArgumentException("Quantity cannot be 0 in OrderLine.", nameof(orderLine.Quantity));
+
+            if (orderLine.Quantity < 0)
+                throw new ArgumentException("Quantity cannot be a negative value in OrderLine.",
+                    nameof(orderLine.Quantity));
+        }
+
+        private void ValidateSubTotal(OrderLine orderLine)
+        {
+            if (orderLine.SubTotalPrice == 0)
+                throw new ArgumentException("SubTotalPrice cannot be 0 in OrderLine.", nameof(orderLine.SubTotalPrice));
+
+            if (orderLine.SubTotalPrice < 0)
+                throw new ArgumentException("SubTotalPrice cannot be a negative value in OrderLine.",
+                    nameof(orderLine.SubTotalPrice));
+        }
+        
+        private void ValidateOrderId(OrderLine orderLine)
+        {
+            if (orderLine.OrderId == 0)
+                throw new ArgumentException("OrderId cannot be 0 in OrderLine.", nameof(orderLine.OrderId));
+            if (orderLine.OrderId < 0)
+                throw new ArgumentException("OrderId cannot be a negative value in OrderLine.",
+                    nameof(orderLine.OrderId));
         }
     }
 }

@@ -38,7 +38,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Product ReadById(long id)
+        public Product ReadById(int id)
         {
             throw new System.NotImplementedException();
         }
@@ -58,7 +58,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             throw new System.NotImplementedException();
         }
 
-        public void Delete(long id)
+        public Product Delete(int id)
         {
             throw new System.NotImplementedException();
         }

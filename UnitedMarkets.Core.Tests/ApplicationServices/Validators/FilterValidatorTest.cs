@@ -15,25 +15,16 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
             new FilterValidator().Should().BeAssignableTo<IValidator<Filter>>();
         }
 
-
-        [Fact]
-        public void DefaultValidation_FilterWithNegativeId_ShouldThrowException()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void DefaultValidation_FilterWithZeroOrNegativeId_ShouldThrowException(int id)
         {
             IValidator<Filter> validator = new FilterValidator();
-            var filter = new Filter() {MarketId = -4};
+            var filter = new Filter {MarketId = id};
             Action action = () => validator.DefaultValidation(filter);
             action.Should().Throw<ArgumentException>()
-                .WithMessage("MarketId has to be number bigger then 0.");
-        }
-
-        [Fact]
-        public void DefaultValidation_FilterWithIdZero_ShouldThrowException()
-        {
-            IValidator<Filter> validator = new FilterValidator();
-            var filter = new Filter() {MarketId = 0};
-            Action action = () => validator.DefaultValidation(filter);
-            action.Should().Throw<ArgumentException>()
-                .WithMessage("MarketId has to be number bigger then 0.");
+                .WithMessage("MarketId cannot be less than 1. (Parameter 'id')");
         }
     }
 }
