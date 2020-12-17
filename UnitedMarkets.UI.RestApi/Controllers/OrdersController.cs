@@ -61,6 +61,8 @@ namespace UnitedMarkets.UI.RestApi.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+        
+        // PUT
         [Authorize(Roles = "Administrator")]
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Order order)
