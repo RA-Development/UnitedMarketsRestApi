@@ -26,19 +26,23 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
 
         public IEnumerable<Order> ReadAll()
         {
-            return _ctx.Orders.Select(order => new Order
-            {
-                Id = order.Id,
-                DateCreated = order.DateCreated,
-                TotalPrice = order.TotalPrice,
-                Status = order.Status == null
-                    ? null
-                    : new Status
-                    {
-                        Id = order.Status.Id,
-                        Name = order.Status.Name
-                    }
-            }).ToList();
+            return _ctx.Orders.Include(o => o.Products);
+
+            //    TODO: write the reason
+            
+            // return _ctx.Orders.Select(order => new Order
+            // {
+            //     Id = order.Id,
+            //     DateCreated = order.DateCreated,
+            //     TotalPrice = order.TotalPrice,
+            //     Status = order.Status == null
+            //         ? null
+            //         : new Status
+            //         {
+            //             Id = order.Status.Id,
+            //             Name = order.Status.Name
+            //         }
+            // }).ToList();
         }
 
         public FilteredList<Order> ReadAll(Filter filter)

@@ -27,32 +27,32 @@ namespace UnitedMarkets.Infrastructure.Data
         {
             //    init amountUnits
             InitAmountUnits();
-            
+
             //    init markets
             InitMarkets();
 
             //    init origins
             InitOrigins();
-            
+
             //    init categories
             InitCategories();
-            
+
             //    init products
             InitProducts();
-            
+
             //    init users
             InitUsers();
-            
+
             //    init status
             InitStatus();
-            
+
             //    init orders
             InitOrders();
 
             //    init order lines
             InitOrderLines();
         }
-        
+
         private void InitAmountUnits()
         {
             _ctx.AmountUnits.Add(new AmountUnit {Name = "piece"});
@@ -68,20 +68,20 @@ namespace UnitedMarkets.Infrastructure.Data
             _marketRepository.Create(new Market {Name = "Kvickly"});
             _marketRepository.Create(new Market {Name = "Bilka"});
         }
-        
+
         private void InitOrigins()
         {
             _ctx.Origins.Add(new Origin {Name = "Spain"});
             _ctx.Origins.Add(new Origin {Name = "Italy"});
         }
-        
+
         private void InitCategories()
         {
             _ctx.Categories.Add(new Category {Name = "Fruit & Vegetable"});
             _ctx.Categories.Add(new Category {Name = "Eggs & Dairy"});
             _ctx.Categories.Add(new Category {Name = "Beverages"});
         }
-        
+
         private void InitProducts()
         {
             var product1 = new Product
@@ -147,6 +147,37 @@ namespace UnitedMarkets.Infrastructure.Data
                 Amount = 1,
                 AmountUnitId = 1
             };
+            var product7 = new Product
+            {
+                Name = "Melon",
+                CategoryId = 1,
+                MarketId = 1,
+                OriginId = 1,
+                PricePerUnit = 19.00,
+                Amount = 1,
+                AmountUnitId = 1
+            };
+            var product8 = new Product
+            {
+                Name = "Red bell pepper",
+                CategoryId = 1,
+                MarketId = 3,
+                OriginId = 2,
+                PricePerUnit = 7.00,
+                Amount = 1,
+                AmountUnitId = 1
+            };
+            var product9 = new Product
+            {
+                Name = "Broccoli",
+                CategoryId = 1,
+                MarketId = 2,
+                OriginId = 1,
+                PricePerUnit = 14.00,
+                Amount = 1,
+                AmountUnitId = 1
+            };
+
 
             _ctx.Products.Add(product1);
             _ctx.Products.Add(product2);
@@ -154,8 +185,11 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Products.Add(product4);
             _ctx.Products.Add(product5);
             _ctx.Products.Add(product6);
+            _ctx.Products.Add(product7);
+            _ctx.Products.Add(product8);
+            _ctx.Products.Add(product9);
         }
-        
+
         private void InitUsers()
         {
             const string password = "abcd";
@@ -190,10 +224,10 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Status.Add(new Status {Name = "Shipped"});
             _ctx.Status.Add(new Status {Name = "Confirmed"});
             _ctx.Status.Add(new Status {Name = "Pending"});
-            
+
             _ctx.SaveChanges();
         }
-        
+
         private void InitOrders()
         {
             var orders = new List<Order>
