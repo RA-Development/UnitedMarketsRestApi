@@ -50,12 +50,12 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         public void DefaultValidation_WithZeroOrNegativeOrderStatusIdInOrderParam_ShouldThrowException(int statusId)
         {
             //    Arrange
-            var order = new Order {OrderStatusId = statusId};
+            var order = new Order {StatusId = statusId};
             //    Act
             Action action = () => _orderValidator.DefaultValidation(order);
             //    Assert
             action.Should().Throw<ArgumentException>()
-                .WithMessage("OrderStatusId cannot be less than 1. (Parameter 'OrderStatus')");
+                .WithMessage("StatusId cannot be less than 1. (Parameter 'Status')");
         }
 
         [Theory]
@@ -63,7 +63,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
         public void DefaultValidation_WithNullOrEmptyProductListInOrderParam_ShouldThrowException(
             List<OrderLine> products)
         {
-            var order = new Order {OrderStatusId = 3, Products = products};
+            var order = new Order {StatusId = 3, Products = products};
             Action action = () => _orderValidator.DefaultValidation(order);
             action.Should().Throw<ArgumentException>()
                 .WithMessage(products == null
@@ -82,7 +82,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
 
             var order = new Order
             {
-                OrderStatusId = 2,
+                StatusId = 2,
                 Products = new List<OrderLine> {orderLine1, orderLine2},
                 TotalPrice = totalPrice
             };
@@ -106,7 +106,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
 
             var order = new Order
             {
-                OrderStatusId = 2,
+                StatusId = 2,
                 Products = new List<OrderLine> {orderLine1, orderLine2},
                 TotalPrice = 74.30,
                 BillingAddress = billingAddress
@@ -127,7 +127,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
 
             var order = new Order
             {
-                OrderStatusId = 2,
+                StatusId = 2,
                 Products = new List<OrderLine> {orderLine1, orderLine2},
                 TotalPrice = 74.30,
                 BillingAddress = "Esbjerg 8",
@@ -146,7 +146,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
 
             var order = new Order
             {
-                OrderStatusId = 2,
+                StatusId = 2,
                 Products = new List<OrderLine> {orderLine1, orderLine2},
                 TotalPrice = 7.80,
                 BillingAddress = "Esbjerg 7",
@@ -193,7 +193,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Validators
             var order = new Order {DateCreated = DateTime.Now, DateUpdated = DateTime.Now};
             Action action = () => _orderValidator.CreateValidation(order);
             action.Should().Throw<ArgumentException>()
-                .WithMessage("Order status has to be 'pending', with id = 1,  on creation. (Parameter 'OrderStatusId')");
+                .WithMessage("Order status has to be 'pending', with id = 1,  on creation. (Parameter 'StatusId')");
         }
 
         [Fact]

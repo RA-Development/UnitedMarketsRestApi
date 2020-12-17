@@ -168,10 +168,10 @@ namespace UnitedMarkets.Infrastructure.Data
 
         private void InitOrderStatuses()
         {
-            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Cancelled"});
-            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Shipped"});
-            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Confirmed"});
-            _ctx.OrderStatuses.Add(new OrderStatus {Name = "Pending"});
+            _ctx.Status.Add(new Status {Name = "Cancelled"});
+            _ctx.Status.Add(new Status {Name = "Shipped"});
+            _ctx.Status.Add(new Status {Name = "Confirmed"});
+            _ctx.Status.Add(new Status {Name = "Pending"});
             
             _ctx.SaveChanges();
         }
@@ -184,18 +184,18 @@ namespace UnitedMarkets.Infrastructure.Data
                 {
                     Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.Now.AddDays(-12),
                     TotalPrice = 42,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 2
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", StatusId = 2
                 },
                 new Order
                 {
                     Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.Now.AddDays(-2),
                     TotalPrice = 222.95,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 3
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", StatusId = 3
                 },
                 new Order
                 {
                     Id = 3, Products = new List<OrderLine>(), DateCreated = DateTime.Now, TotalPrice = 1255.95,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", StatusId = 4
                 }
             };
 

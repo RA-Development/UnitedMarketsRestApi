@@ -2,7 +2,7 @@
 
 namespace UnitedMarkets.Core.Entities
 {
-    public class OrderStatus
+    public class Status
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -126,7 +126,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
                 BillingAddress = "Esbjerg 7",
                 ShippingAddress = "Esbjerg 8",
                 TotalPrice = 199.95,
-                OrderStatusId = 1,
+                StatusId = 1,
                 DateCreated = DateTime.Now,
                 DateUpdated = DateTime.Now
             };
@@ -145,7 +145,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
             actual.BillingAddress.Should().BeEquivalentTo(expected.BillingAddress);
             actual.ShippingAddress.Should().BeEquivalentTo(expected.ShippingAddress);
             actual.TotalPrice.Should().Be(expected.TotalPrice);
-            actual.OrderStatus.Should().BeEquivalentTo(expected.OrderStatus);
+            actual.Status.Should().BeEquivalentTo(expected.Status);
             actual.DateCreated.Should().BeCloseTo(expected.DateCreated, 5.Seconds());
             actual.DateUpdated.Should().BeCloseTo(expected.DateUpdated, 5.Seconds());
             foreach (var item in expected.Products)
@@ -182,18 +182,18 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
                 {
                     Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-12),
                     TotalPrice = 100.45, BillingAddress = "Billing Street", ShippingAddress = "Shipping Street",
-                    OrderStatusId = 4
+                    StatusId = 4
                 },
                 new Order
                 {
                     Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-1),
                     TotalPrice = 222.95, BillingAddress = "Billing Street", ShippingAddress = "Shipping Street",
-                    OrderStatusId = 4
+                    StatusId = 4
                 },
                 new Order
                 {
                     Id = 3, Products = new List<OrderLine>(), DateCreated = DateTime.Today, TotalPrice = 1255.95,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", StatusId = 4
                 }
             };
 
@@ -210,18 +210,18 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
                 {
                     Id = 1, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-12),
                     TotalPrice = 100.45, BillingAddress = "Billing Street", ShippingAddress = "Shipping Street",
-                    OrderStatusId = 4
+                    StatusId = 4
                 },
                 new Order
                 {
                     Id = 3, Products = new List<OrderLine>(), DateCreated = DateTime.Today, TotalPrice = 1255.95,
-                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", OrderStatusId = 4
+                    BillingAddress = "Billing Street", ShippingAddress = "Shipping Street", StatusId = 4
                 },
                 new Order
                 {
                     Id = 2, Products = new List<OrderLine>(), DateCreated = DateTime.Today.AddDays(-1),
                     TotalPrice = 222.95, BillingAddress = "Billing Street", ShippingAddress = "Shipping Street",
-                    OrderStatusId = 4
+                    StatusId = 4
                 }
             };
 
@@ -239,7 +239,7 @@ namespace UnitedMarkets.Core.Tests.ApplicationServices.Services
                 BillingAddress = "Esbjerg 7",
                 ShippingAddress = "Esbjerg 7",
                 TotalPrice = 39,
-                OrderStatusId = 4,
+                StatusId = 4,
                 DateCreated = DateTime.Parse("05/29/2015 05:50:06"),
                 DateUpdated = DateTime.Now
             };

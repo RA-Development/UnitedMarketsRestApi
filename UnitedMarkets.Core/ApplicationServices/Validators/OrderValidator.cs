@@ -46,8 +46,8 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
 
         private void ValidateStatus(Order order)
         {
-            if (order.OrderStatusId < 1)
-                throw new ArgumentException("OrderStatusId cannot be less than 1.", nameof(order.OrderStatus));
+            if (order.StatusId < 1)
+                throw new ArgumentException("StatusId cannot be less than 1.", nameof(order.Status));
         }
         
         private void ValidateProductList(Order order)
@@ -107,10 +107,10 @@ namespace UnitedMarkets.Core.ApplicationServices.Validators
         private void
             ValidatePendingStatus(Order order) // TODO: Status validation is vulnerable. Check for name instead?
         {
-            if (order.OrderStatusId != 1)
+            if (order.StatusId != 1)
                 throw new ArgumentException(
                     "Order status has to be 'pending', with id = 1,  on creation.",
-                    nameof(order.OrderStatusId));
+                    nameof(order.StatusId));
         }
 
         private void ValidateDatesUpdateValidation(Order order)

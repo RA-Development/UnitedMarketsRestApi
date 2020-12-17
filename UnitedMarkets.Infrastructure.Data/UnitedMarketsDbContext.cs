@@ -21,7 +21,7 @@ namespace UnitedMarkets.Infrastructure.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Origin> OriginCountries { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<OrderStatus> OrderStatuses { get; set; }
+        public DbSet<Status> Status { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,7 +56,7 @@ namespace UnitedMarkets.Infrastructure.Data
                 .HasForeignKey(ol => new {ol.ProductId});
 
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.OrderStatus)
+                .HasOne(o => o.Status)
                 .WithMany(os => os.Orders);
 
             //modelBuilder.Entity<Order>().Property<bool>("IsDeleted");

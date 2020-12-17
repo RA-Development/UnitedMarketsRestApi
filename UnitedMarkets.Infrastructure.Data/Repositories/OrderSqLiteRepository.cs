@@ -25,12 +25,12 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
                 Id = order.Id,
                 DateCreated = order.DateCreated,
                 TotalPrice = order.TotalPrice,
-                OrderStatus = order.OrderStatus == null
+                Status = order.Status == null
                     ? null
-                    : new OrderStatus
+                    : new Status
                     {
-                        Id = order.OrderStatus.Id,
-                        Name = order.OrderStatus.Name
+                        Id = order.Status.Id,
+                        Name = order.Status.Name
                     }
             }).ToList();
         }

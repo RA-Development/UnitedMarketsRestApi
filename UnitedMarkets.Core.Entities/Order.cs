@@ -18,9 +18,9 @@ namespace UnitedMarkets.Core.Entities
 
         public string ShippingAddress { get; set; }
 
-        public int OrderStatusId { get; set; }
+        public int StatusId { get; set; }
 
-        public OrderStatus OrderStatus { get; set; }
+        public Status Status { get; set; }
         public bool IsDeleted { get; set; }
     }
 }
