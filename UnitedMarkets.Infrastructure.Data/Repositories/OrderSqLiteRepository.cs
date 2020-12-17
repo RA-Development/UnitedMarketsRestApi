@@ -28,7 +28,7 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
         {
             return _ctx.Orders.Include(o => o.Products);
 
-            //    TODO: write the reason
+            //    NOTE: Use code below for order overview.
             
             // return _ctx.Orders.Select(order => new Order
             // {
