@@ -16,25 +16,6 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             _ctx = ctx;
         }
 
-        public IEnumerable<Market> ReadAll()
-        {
-            return _ctx.Markets.Select(market => new Market
-            {
-                Id = market.Id,
-                Name = market.Name
-            }).ToList();
-        }
-
-        public Market ReadById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Market ReadByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public Market Create(Market market)
         {
             var entry = _ctx.Markets.Add(new Market
@@ -50,17 +31,36 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             };
         }
 
+        public IEnumerable<Market> ReadAll()
+        {
+            return _ctx.Markets.Select(market => new Market
+            {
+                Id = market.Id,
+                Name = market.Name
+            }).ToList();
+        }
+
+        public FilteredList<Market> ReadAll(Filter filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Market ReadById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Market ReadByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
         public Market Update(Market entity)
         {
             throw new NotImplementedException();
         }
 
         public Market Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FilteredList<Market> ReadAll(Filter filter)
         {
             throw new NotImplementedException();
         }

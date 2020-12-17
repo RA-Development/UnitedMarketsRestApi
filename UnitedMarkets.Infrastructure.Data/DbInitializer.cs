@@ -26,23 +26,64 @@ namespace UnitedMarkets.Infrastructure.Data
         public void InitData()
         {
             //    init amountUnits
-            _ctx.AmountUnits.Add(new AmountUnit {Name = "piece"});
-            _ctx.AmountUnits.Add(new AmountUnit {Name = "kg"});
-            _ctx.SaveChanges();
-
+            InitAmountUnits();
+            
             //    init markets
             InitMarkets();
 
-            _ctx.SaveChanges();
             //    init origins
-            _ctx.OriginCountries.Add(new Origin {Name = "Spain"});
-            _ctx.OriginCountries.Add(new Origin {Name = "Italy"});
-            _ctx.SaveChanges();
+            InitOrigins();
+            
             //    init categories
+            InitCategories();
+            
+            //    init products
+            InitProducts();
+            
+            //    init users
+            InitUsers();
+            
+            //    init status
+            InitStatus();
+            
+            //    init orders
+            InitOrders();
+
+            //    init order lines
+            InitOrderLines();
+        }
+        
+        private void InitAmountUnits()
+        {
+            _ctx.AmountUnits.Add(new AmountUnit {Name = "piece"});
+            _ctx.AmountUnits.Add(new AmountUnit {Name = "kg"});
+        }
+
+        private void InitMarkets()
+        {
+            _marketRepository.Create(new Market {Name = "Fakta"});
+            _marketRepository.Create(new Market {Name = "Netto"});
+            _marketRepository.Create(new Market {Name = "Irma"});
+            _marketRepository.Create(new Market {Name = "Føtex"});
+            _marketRepository.Create(new Market {Name = "Kvickly"});
+            _marketRepository.Create(new Market {Name = "Bilka"});
+        }
+        
+        private void InitOrigins()
+        {
+            _ctx.Origins.Add(new Origin {Name = "Spain"});
+            _ctx.Origins.Add(new Origin {Name = "Italy"});
+        }
+        
+        private void InitCategories()
+        {
             _ctx.Categories.Add(new Category {Name = "Fruit & Vegetable"});
             _ctx.Categories.Add(new Category {Name = "Eggs & Dairy"});
             _ctx.Categories.Add(new Category {Name = "Beverages"});
-            _ctx.SaveChanges();
+        }
+        
+        private void InitProducts()
+        {
             var product1 = new Product
             {
                 Name = "Apples",
@@ -113,31 +154,8 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Products.Add(product4);
             _ctx.Products.Add(product5);
             _ctx.Products.Add(product6);
-
-            //    init users
-            InitUsers();
-            
-            //    init order status
-            InitOrderStatuses();
-            
-            //    init orders
-            InitOrders();
-
-            //    init order lines
-            InitOrderLines();
         }
         
-        private void InitMarkets()
-        {
-            _marketRepository.Create(new Market {Name = "Fakta"});
-            _marketRepository.Create(new Market {Name = "Netto"});
-            _marketRepository.Create(new Market {Name = "Irma"});
-            _marketRepository.Create(new Market {Name = "Føtex"});
-            _marketRepository.Create(new Market {Name = "Kvickly"});
-            _marketRepository.Create(new Market {Name = "Bilka"});
-            _ctx.SaveChanges();
-        }
-
         private void InitUsers()
         {
             const string password = "abcd";
@@ -166,7 +184,7 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.SaveChanges();
         }
 
-        private void InitOrderStatuses()
+        private void InitStatus()
         {
             _ctx.Status.Add(new Status {Name = "Cancelled"});
             _ctx.Status.Add(new Status {Name = "Shipped"});
