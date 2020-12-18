@@ -32,10 +32,8 @@ namespace UnitedMarkets.Core.ApplicationServices.Services
         {
             order.DateCreated = DateTime.Now;
             order.DateUpdated = DateTime.Now;
-            //TODO: Set in the front-end. Otherwise the status keep changing if data changes.
             order.StatusId = 1;
             foreach (var orderLine in order.Products) _orderLineValidator.DefaultValidation(orderLine);
-
             _orderValidator.DefaultValidation(order);
             _orderValidator.CreateValidation(order);
             return _orderRepository.Create(order);

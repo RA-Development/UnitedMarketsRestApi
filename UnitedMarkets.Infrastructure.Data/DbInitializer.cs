@@ -88,7 +88,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Apples",
                 CategoryId = 1,
-                MarketId = 2,
+                MarketId = 1,
                 OriginId = 1,
                 PricePerUnit = 5,
                 Amount = 6,
@@ -99,7 +99,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Sugar",
                 CategoryId = 1,
-                MarketId = 3,
+                MarketId = 1,
                 OriginId = 2,
                 PricePerUnit = 3.10,
                 Amount = 2,
@@ -121,7 +121,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Banana",
                 CategoryId = 1,
-                MarketId = 3,
+                MarketId = 2,
                 OriginId = 1,
                 PricePerUnit = 9.50,
                 Amount = 4,
@@ -131,7 +131,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Kiwi",
                 CategoryId = 1,
-                MarketId = 1,
+                MarketId = 2,
                 OriginId = 1,
                 PricePerUnit = 6.00,
                 Amount = 1,
@@ -151,7 +151,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Melon",
                 CategoryId = 1,
-                MarketId = 1,
+                MarketId = 3,
                 OriginId = 1,
                 PricePerUnit = 19.00,
                 Amount = 1,
@@ -171,7 +171,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Broccoli",
                 CategoryId = 1,
-                MarketId = 2,
+                MarketId = 3,
                 OriginId = 1,
                 PricePerUnit = 14.00,
                 Amount = 1,
@@ -188,6 +188,7 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Products.Add(product7);
             _ctx.Products.Add(product8);
             _ctx.Products.Add(product9);
+            _ctx.SaveChanges();
         }
 
         private void InitUsers()
