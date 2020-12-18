@@ -41,7 +41,6 @@ namespace UnitedMarkets.UI.RestApi
             var loggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); }
             );
             if (Env.IsDevelopment())
-            {
                 services.AddDbContext<UnitedMarketsDbContext>(opt =>
                 {
                     opt
@@ -50,18 +49,15 @@ namespace UnitedMarkets.UI.RestApi
                         .UseSqlite("Data Source=UnitedMarketsSqLite.db")
                         .EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
-            }
-            
+
             if (Env.IsProduction())
-            {
                 services.AddDbContext<UnitedMarketsDbContext>(opt =>
                 {
                     opt
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                         .UseSqlServer(Conf.GetConnectionString("defaultConnection"));
                 }, ServiceLifetime.Transient);
-            }
-            
+
             // Register repositories and services for dependency injection.
             services.AddScoped<IDbInitializer, DbInitializer>();
 
@@ -126,24 +122,15 @@ namespace UnitedMarkets.UI.RestApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                using var scope = app.ApplicationServices.CreateScope();
-                var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
-                var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            app.UseDeveloperExceptionPage();
+            using var scope = app.ApplicationServices.CreateScope();
+            var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
+            var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
 
-                ctx.Database.EnsureDeleted();
-                ctx.Database.EnsureCreated();
+            ctx.Database.EnsureDeleted();
+            ctx.Database.EnsureCreated();
 
-                dataInitializer.InitData();
-            }
-            else
-            {
-                using var scope = app.ApplicationServices.CreateScope();
-                var ctx = scope.ServiceProvider.GetService<UnitedMarketsDbContext>();
-                ctx.Database.EnsureCreated();
-            }
+            dataInitializer.InitData();
 
             app.UseHttpsRedirection();
 
