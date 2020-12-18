@@ -51,11 +51,14 @@ namespace UnitedMarkets.UI.RestApi
                 }, ServiceLifetime.Transient);
 
             if (Env.IsProduction())
-                // Azure SQL database:
+            {
                 services.AddDbContext<UnitedMarketsDbContext>(opt =>
-                    opt.UseSqlServer(Conf.GetConnectionString("defaultConnection")));
-            // Register SQL Server database initializer for dependency injection.
-            services.AddTransient<IDbInitializer, DbInitializer>();
+                {
+                    opt
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                        .UseSqlServer(Conf.GetConnectionString("defaultConnection"));
+                }, ServiceLifetime.Transient);
+            }
 
 
             // Register repositories and services for dependency injection.
@@ -122,15 +125,33 @@ namespace UnitedMarkets.UI.RestApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Initialize the database
-            using (var scope = app.ApplicationServices.CreateScope())
+            if (env.IsDevelopment())
             {
-                var services = scope.ServiceProvider;
-                var ctx = services.GetService<UnitedMarketsDbContext>();
+                app.UseDeveloperExceptionPage();
+                using var scope = app.ApplicationServices.CreateScope();
+                var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
+                var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
                 ctx.Database.EnsureDeleted();
                 ctx.Database.EnsureCreated();
-                var dbInitializer = services.GetService<IDbInitializer>();
-                dbInitializer.InitData();
+                dataInitializer.InitData();
+            }
+            
+            if (env.IsProduction())
+            {
+                using var scope = app.ApplicationServices.CreateScope();
+                var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
+                var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                ctx.Database.ExecuteSqlRaw("DROP TABLE Orders");
+                ctx.Database.ExecuteSqlRaw("DROP TABLE Products");
+                ctx.Database.ExecuteSqlRaw("DROP TABLE AmountUnits");
+                ctx.Database.ExecuteSqlRaw("DROP TABLE OrderLines");
+                ctx.Database.ExecuteSqlRaw("DROP TABLE Markets");
+                ctx.Database.ExecuteSqlRaw("DROP TABLE Categories");
+                ctx.Database.ExecuteSqlRaw("DROP TABLE Origins");
+                ctx.Database.ExecuteSqlRaw("DROP TABLE Users");
+                ctx.Database.ExecuteSqlRaw("DROP TABLE Status");
+                ctx.Database.EnsureCreated();
+                dataInitializer.InitData();
             }
 
             app.UseHttpsRedirection();
