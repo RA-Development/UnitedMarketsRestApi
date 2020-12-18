@@ -122,15 +122,16 @@ namespace UnitedMarkets.UI.RestApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
-            using var scope = app.ApplicationServices.CreateScope();
-            var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
-            var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-
-            ctx.Database.EnsureDeleted();
-            ctx.Database.EnsureCreated();
-
-            dataInitializer.InitData();
+            // Initialize the database
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var ctx = services.GetService<UnitedMarketsDbContext>();
+                ctx.Database.EnsureDeleted();
+                ctx.Database.EnsureCreated();
+                var dbInitializer = services.GetService<IDbInitializer>();
+                dbInitializer.InitData();
+            }
 
             app.UseHttpsRedirection();
 
