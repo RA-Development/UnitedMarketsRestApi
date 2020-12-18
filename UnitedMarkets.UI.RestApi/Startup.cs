@@ -51,12 +51,12 @@ namespace UnitedMarkets.UI.RestApi
                 }, ServiceLifetime.Transient);
 
             if (Env.IsProduction())
+                // Azure SQL database:
                 services.AddDbContext<UnitedMarketsDbContext>(opt =>
-                {
-                    opt
-                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                        .UseSqlServer(Conf.GetConnectionString("defaultConnection"));
-                }, ServiceLifetime.Transient);
+                    opt.UseSqlServer(Conf.GetConnectionString("defaultConnection")));
+            // Register SQL Server database initializer for dependency injection.
+            services.AddTransient<IDbInitializer, DbInitializer>();
+
 
             // Register repositories and services for dependency injection.
             services.AddScoped<IDbInitializer, DbInitializer>();
