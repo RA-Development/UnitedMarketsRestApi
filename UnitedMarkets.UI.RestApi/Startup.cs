@@ -56,7 +56,7 @@ namespace UnitedMarkets.UI.RestApi
                 {
                     opt
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                        .UseSqlServer(Conf.GetConnectionString("defaultConnection"));
+                        .UseSqlite("Data Source=UnitedMarketsSqLiteProd.db");
                 }, ServiceLifetime.Transient);
             }
 
@@ -135,21 +135,14 @@ namespace UnitedMarkets.UI.RestApi
                 ctx.Database.EnsureCreated();
                 dataInitializer.InitData();
             }
-            
+
             if (env.IsProduction())
             {
+                app.UseDeveloperExceptionPage();
                 using var scope = app.ApplicationServices.CreateScope();
                 var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
                 var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-                ctx.Database.ExecuteSqlRaw("DROP TABLE Orders");
-                ctx.Database.ExecuteSqlRaw("DROP TABLE Products");
-                ctx.Database.ExecuteSqlRaw("DROP TABLE AmountUnits");
-                ctx.Database.ExecuteSqlRaw("DROP TABLE OrderLines");
-                ctx.Database.ExecuteSqlRaw("DROP TABLE Markets");
-                ctx.Database.ExecuteSqlRaw("DROP TABLE Categories");
-                ctx.Database.ExecuteSqlRaw("DROP TABLE Origins");
-                ctx.Database.ExecuteSqlRaw("DROP TABLE Users");
-                ctx.Database.ExecuteSqlRaw("DROP TABLE Status");
+                ctx.Database.EnsureDeleted();
                 ctx.Database.EnsureCreated();
                 dataInitializer.InitData();
             }
