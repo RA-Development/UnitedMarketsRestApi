@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace UnitedMarkets.Core.Entities
 {
@@ -8,11 +6,9 @@ namespace UnitedMarkets.Core.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public double PricePerUnit { get; set; }
-        //    TODO: Remove from DB but has to stay here
-        public double Price { get; set; }
         public int Amount { get; set; }
-        public IEnumerable<OrderLine> Orders { get; set; }
+        public double PricePerUnit { get; set; }
+        public double Price { get; set; }
         public int MarketId { get; set; }
         public Market Market { get; set; }
         public int CategoryId { get; set; }
@@ -21,5 +17,7 @@ namespace UnitedMarkets.Core.Entities
         public Origin Origin { get; set; }
         public int AmountUnitId { get; set; }
         public AmountUnit AmountUnit { get; set; }
+        
+        public IEnumerable<OrderLine> Orders { get; set; }
     }
 }

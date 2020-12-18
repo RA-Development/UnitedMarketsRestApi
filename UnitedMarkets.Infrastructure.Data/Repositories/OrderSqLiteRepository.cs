@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using UnitedMarkets.Core.ApplicationServices.Validators;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 using UnitedMarkets.Core.Filtering;
@@ -18,21 +17,37 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             _ctx = ctx;
         }
 
+        public Order Create(Order order)
+        {
+            var createdOrder = _ctx.Orders.Add(order);
+            _ctx.SaveChanges();
+            return createdOrder.Entity;
+        }
+
         public IEnumerable<Order> ReadAll()
         {
-            return _ctx.Orders.Select(order => new Order
-            {
-                Id = order.Id,
-                DateCreated = order.DateCreated,
-                TotalPrice = order.TotalPrice,
-                Status = order.Status == null
-                    ? null
-                    : new Status
-                    {
-                        Id = order.Status.Id,
-                        Name = order.Status.Name
-                    }
-            }).ToList();
+            return _ctx.Orders.Include(o => o.Products);
+
+            //    NOTE: Use code below for order overview.
+            
+            // return _ctx.Orders.Select(order => new Order
+            // {
+            //     Id = order.Id,
+            //     DateCreated = order.DateCreated,
+            //     TotalPrice = order.TotalPrice,
+            //     Status = order.Status == null
+            //         ? null
+            //         : new Status
+            //         {
+            //             Id = order.Status.Id,
+            //             Name = order.Status.Name
+            //         }
+            // }).ToList();
+        }
+
+        public FilteredList<Order> ReadAll(Filter filter)
+        {
+            throw new NotImplementedException();
         }
 
         public Order ReadById(int id)
@@ -43,13 +58,6 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
         public Order ReadByName(string name)
         {
             throw new NotImplementedException();
-        }
-
-        public Order Create(Order order)
-        {
-            var createdOrder = _ctx.Orders.Add(order);
-            _ctx.SaveChanges();
-            return createdOrder.Entity;
         }
 
         public Order Update(Order orderFromRequest)
@@ -82,11 +90,6 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             {
                 throw new DataException("The status could not be changed to \"Deleted\".");
             }
-        }
-
-        public FilteredList<Order> ReadAll(Filter filter)
-        {
-            throw new NotImplementedException();
         }
     }
 }

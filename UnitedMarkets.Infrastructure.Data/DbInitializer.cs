@@ -26,28 +26,69 @@ namespace UnitedMarkets.Infrastructure.Data
         public void InitData()
         {
             //    init amountUnits
-            _ctx.AmountUnits.Add(new AmountUnit {Name = "piece"});
-            _ctx.AmountUnits.Add(new AmountUnit {Name = "kg"});
-            _ctx.SaveChanges();
+            InitAmountUnits();
 
             //    init markets
             InitMarkets();
 
-            _ctx.SaveChanges();
             //    init origins
-            _ctx.OriginCountries.Add(new Origin {Name = "Spain"});
-            _ctx.OriginCountries.Add(new Origin {Name = "Italy"});
-            _ctx.SaveChanges();
+            InitOrigins();
+
             //    init categories
+            InitCategories();
+
+            //    init products
+            InitProducts();
+
+            //    init users
+            InitUsers();
+
+            //    init status
+            InitStatus();
+
+            //    init orders
+            InitOrders();
+
+            //    init order lines
+            InitOrderLines();
+        }
+
+        private void InitAmountUnits()
+        {
+            _ctx.AmountUnits.Add(new AmountUnit {Name = "piece"});
+            _ctx.AmountUnits.Add(new AmountUnit {Name = "kg"});
+        }
+
+        private void InitMarkets()
+        {
+            _marketRepository.Create(new Market {Name = "Fakta"});
+            _marketRepository.Create(new Market {Name = "Netto"});
+            _marketRepository.Create(new Market {Name = "Irma"});
+            _marketRepository.Create(new Market {Name = "Føtex"});
+            _marketRepository.Create(new Market {Name = "Kvickly"});
+            _marketRepository.Create(new Market {Name = "Bilka"});
+        }
+
+        private void InitOrigins()
+        {
+            _ctx.Origins.Add(new Origin {Name = "Spain"});
+            _ctx.Origins.Add(new Origin {Name = "Italy"});
+        }
+
+        private void InitCategories()
+        {
             _ctx.Categories.Add(new Category {Name = "Fruit & Vegetable"});
             _ctx.Categories.Add(new Category {Name = "Eggs & Dairy"});
             _ctx.Categories.Add(new Category {Name = "Beverages"});
-            _ctx.SaveChanges();
+        }
+
+        private void InitProducts()
+        {
             var product1 = new Product
             {
                 Name = "Apples",
                 CategoryId = 1,
-                MarketId = 2,
+                MarketId = 1,
                 OriginId = 1,
                 PricePerUnit = 5,
                 Amount = 6,
@@ -58,7 +99,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Sugar",
                 CategoryId = 1,
-                MarketId = 3,
+                MarketId = 1,
                 OriginId = 2,
                 PricePerUnit = 3.10,
                 Amount = 2,
@@ -80,7 +121,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Banana",
                 CategoryId = 1,
-                MarketId = 3,
+                MarketId = 2,
                 OriginId = 1,
                 PricePerUnit = 9.50,
                 Amount = 4,
@@ -90,7 +131,7 @@ namespace UnitedMarkets.Infrastructure.Data
             {
                 Name = "Kiwi",
                 CategoryId = 1,
-                MarketId = 1,
+                MarketId = 2,
                 OriginId = 1,
                 PricePerUnit = 6.00,
                 Amount = 1,
@@ -106,6 +147,37 @@ namespace UnitedMarkets.Infrastructure.Data
                 Amount = 1,
                 AmountUnitId = 1
             };
+            var product7 = new Product
+            {
+                Name = "Melon",
+                CategoryId = 1,
+                MarketId = 3,
+                OriginId = 1,
+                PricePerUnit = 19.00,
+                Amount = 1,
+                AmountUnitId = 1
+            };
+            var product8 = new Product
+            {
+                Name = "Red bell pepper",
+                CategoryId = 1,
+                MarketId = 3,
+                OriginId = 2,
+                PricePerUnit = 7.00,
+                Amount = 1,
+                AmountUnitId = 1
+            };
+            var product9 = new Product
+            {
+                Name = "Broccoli",
+                CategoryId = 1,
+                MarketId = 3,
+                OriginId = 1,
+                PricePerUnit = 14.00,
+                Amount = 1,
+                AmountUnitId = 1
+            };
+
 
             _ctx.Products.Add(product1);
             _ctx.Products.Add(product2);
@@ -113,28 +185,9 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.Products.Add(product4);
             _ctx.Products.Add(product5);
             _ctx.Products.Add(product6);
-
-            //    init users
-            InitUsers();
-            
-            //    init order status
-            InitOrderStatuses();
-            
-            //    init orders
-            InitOrders();
-
-            //    init order lines
-            InitOrderLines();
-        }
-        
-        private void InitMarkets()
-        {
-            _marketRepository.Create(new Market {Name = "Fakta"});
-            _marketRepository.Create(new Market {Name = "Netto"});
-            _marketRepository.Create(new Market {Name = "Irma"});
-            _marketRepository.Create(new Market {Name = "Føtex"});
-            _marketRepository.Create(new Market {Name = "Kvickly"});
-            _marketRepository.Create(new Market {Name = "Bilka"});
+            _ctx.Products.Add(product7);
+            _ctx.Products.Add(product8);
+            _ctx.Products.Add(product9);
             _ctx.SaveChanges();
         }
 
@@ -166,16 +219,16 @@ namespace UnitedMarkets.Infrastructure.Data
             _ctx.SaveChanges();
         }
 
-        private void InitOrderStatuses()
+        private void InitStatus()
         {
             _ctx.Status.Add(new Status {Name = "Cancelled"});
             _ctx.Status.Add(new Status {Name = "Shipped"});
             _ctx.Status.Add(new Status {Name = "Confirmed"});
             _ctx.Status.Add(new Status {Name = "Pending"});
-            
+
             _ctx.SaveChanges();
         }
-        
+
         private void InitOrders()
         {
             var orders = new List<Order>

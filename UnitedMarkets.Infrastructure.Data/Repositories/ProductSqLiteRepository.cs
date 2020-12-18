@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using UnitedMarkets.Core.DomainServices;
 using UnitedMarkets.Core.Entities;
 using UnitedMarkets.Core.Filtering;
@@ -10,17 +10,26 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
 {
     public class ProductSqLiteRepository : IRepository<Product>
     {
-        private UnitedMarketsDbContext _ctx;
+        private readonly UnitedMarketsDbContext _ctx;
 
         public ProductSqLiteRepository(UnitedMarketsDbContext context)
         {
             _ctx = context;
         }
 
+        public Product Create(Product entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Product> ReadAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public FilteredList<Product> ReadAll(Filter filter)
         {
-            var filteredList = new FilteredList<Product>() {FilterUsed = filter};
-
+            var filteredList = new FilteredList<Product> {FilterUsed = filter};
 
             filteredList.List = _ctx.Products
                 .Where(p => p.MarketId == filter.MarketId)
@@ -33,34 +42,24 @@ namespace UnitedMarkets.Infrastructure.Data.Repositories
             return filteredList;
         }
 
-        public IEnumerable<Product> ReadAll()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public Product ReadById(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Product ReadByName(string name)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Product Create(Product entity)
-        {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Product Update(Product entity)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Product Delete(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
