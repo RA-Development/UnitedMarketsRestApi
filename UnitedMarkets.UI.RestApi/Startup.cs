@@ -51,10 +51,17 @@ namespace UnitedMarkets.UI.RestApi
                         .EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
             }
-            else // TODO: Azure SQL database.
+            
+            if (Env.IsProduction())
             {
+                services.AddDbContext<UnitedMarketsDbContext>(opt =>
+                {
+                    opt
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                        .UseSqlServer(Conf.GetConnectionString("defaultConnection"));
+                }, ServiceLifetime.Transient);
             }
-
+            
             // Register repositories and services for dependency injection.
             services.AddScoped<IDbInitializer, DbInitializer>();
 
@@ -131,8 +138,11 @@ namespace UnitedMarkets.UI.RestApi
 
                 dataInitializer.InitData();
             }
-            else //TODO: Production environment.
+            else
             {
+                using var scope = app.ApplicationServices.CreateScope();
+                var ctx = scope.ServiceProvider.GetService<UnitedMarketsDbContext>();
+                ctx.Database.EnsureCreated();
             }
 
             app.UseHttpsRedirection();
