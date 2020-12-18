@@ -41,7 +41,6 @@ namespace UnitedMarkets.UI.RestApi
             var loggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); }
             );
             if (Env.IsDevelopment())
-            {
                 services.AddDbContext<UnitedMarketsDbContext>(opt =>
                 {
                     opt
@@ -50,10 +49,17 @@ namespace UnitedMarkets.UI.RestApi
                         .UseSqlite("Data Source=UnitedMarketsSqLite.db")
                         .EnableSensitiveDataLogging(); // BE AWARE ...   only in dev mode
                 }, ServiceLifetime.Transient);
-            }
-            else // TODO: Azure SQL database.
+
+            if (Env.IsProduction())
             {
+                services.AddDbContext<UnitedMarketsDbContext>(opt =>
+                {
+                    opt
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                        .UseSqlite("Data Source=UnitedMarketsSqLiteProd.db");
+                }, ServiceLifetime.Transient);
             }
+
 
             // Register repositories and services for dependency injection.
             services.AddScoped<IDbInitializer, DbInitializer>();
@@ -125,14 +131,20 @@ namespace UnitedMarkets.UI.RestApi
                 using var scope = app.ApplicationServices.CreateScope();
                 var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
                 var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-
                 ctx.Database.EnsureDeleted();
                 ctx.Database.EnsureCreated();
-
                 dataInitializer.InitData();
             }
-            else //TODO: Production environment.
+
+            if (env.IsProduction())
             {
+                app.UseDeveloperExceptionPage();
+                using var scope = app.ApplicationServices.CreateScope();
+                var ctx = scope.ServiceProvider.GetRequiredService<UnitedMarketsDbContext>();
+                var dataInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                ctx.Database.EnsureDeleted();
+                ctx.Database.EnsureCreated();
+                dataInitializer.InitData();
             }
 
             app.UseHttpsRedirection();

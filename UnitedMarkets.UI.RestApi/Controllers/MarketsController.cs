@@ -30,20 +30,5 @@ namespace UnitedMarkets.UI.RestApi.Controllers
                 return BadRequest(e.Message);
             }
         }
-
-        // GET: api/markets/admin TODO: Remove as it was made for test purposes.
-        [Authorize(Roles = "Administrator")]
-        [Route("admin")]
-        public ActionResult<IEnumerable<Market>> GetAllTest()
-        {
-            try
-            {
-                return Ok(_marketService.GetAll());
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, $"There was a problem loading all markets. \n{e.Message}");
-            }
-        }
     }
 }
